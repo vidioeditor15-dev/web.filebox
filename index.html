@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BeritaKini - Portal Berita Terpercaya Indonesia</title>
+    <meta
+      name="description"
+      content="Portal berita terpercaya dengan informasi terkini dari Indonesia dan dunia. Dapatkan berita nasional, internasional, ekonomi, olahraga, dan teknologi."
+    />
+    <meta
+      name="keywords"
+      content="berita, news, indonesia, nasional, internasional, ekonomi, olahraga, teknologi"
+    />
+    <meta property="og:title" content="BeritaKini - Portal Berita Terpercaya" />
+    <meta
+      property="og:description"
+      content="Portal berita terpercaya dengan informasi terkini dari Indonesia dan dunia"
+    />
+    <meta property="og:type" content="website" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .ticker-content {
+        animation: scroll 30s linear infinite;
+      }
+      @keyframes scroll {
+        0% {
+          transform: translateX(100%);
+        }
+        100% {
+          transform: translateX(-100%);
+        }
+      }
+      .fade-in {
+        animation: fadeIn 0.5s ease-in;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .article-hover {
+        transition: all 0.3s ease;
+      }
+      .article-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+      .admin-panel {
+        display: none;
+      }
+      .admin-panel.active {
+        display: block;
+      }
+      .modal {
+        display: none;
+      }
+      .modal.active {
+        display: flex;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+      <!-- Top Bar -->
+      <div class="bg-red-600 text-white py-2">
+        <div
+          class="container mx-auto px-4 flex justify-between items-center text-sm"
+        >
+          <div class="flex items-center space-x-4">
+            <span id="current-date"></span>
+            <span class="hidden md:block">|</span>
+            <span class="hidden md:block">Jakarta, Indonesia</span>
+          </div>
+          <div class="flex items-center space-x-4">
+            <button onclick="toggleDarkMode()" class="hover:text-red-200">
+              <i data-lucide="moon" class="w-4 h-4"></i>
+            </button>
+            <button onclick="showLoginModal()" class="hover:text-red-200">
+              Login
+            </button>
+            <button onclick="showAdminPanel()" class="hover:text-red-200">
+              Admin
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Header -->
+      <div class="container mx-auto px-4 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-4">
+            <h1 class="text-3xl font-bold text-red-600">BeritaKini</h1>
+            <span class="text-sm text-gray-500 hidden md:block"
+              >Portal Berita Terpercaya</span
+            >
+          </div>
+
+          <!-- Search -->
+          <div class="flex-1 max-w-md mx-8">
+            <div class="relative">
+              <input
+                type="text"
+                id="search-input"
+                placeholder="Cari berita..."
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+              />
+              <button
+                onclick="searchArticles()"
+                class="absolute right-3 top-2.5 text-gray-400 hover:text-red-600"
+              >
+                <i data-lucide="search" class="w-5 h-5"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Social Media -->
+          <div class="flex items-center space-x-3">
+            <a href="#" class="text-gray-600 hover:text-red-600"
+              ><i data-lucide="facebook" class="w-5 h-5"></i
+            ></a>
+            <a href="#" class="text-gray-600 hover:text-red-600"
+              ><i data-lucide="twitter" class="w-5 h-5"></i
+            ></a>
+            <a href="#" class="text-gray-600 hover:text-red-600"
+              ><i data-lucide="instagram" class="w-5 h-5"></i
+            ></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="bg-gray-100 border-t">
+        <div class="container mx-auto px-4">
+          <div class="flex items-center space-x-8 py-3 overflow-x-auto">
+            <button
+              onclick="showCategory('semua')"
+              class="nav-item active whitespace-nowrap px-3 py-2 text-sm font-medium text-red-600 border-b-2 border-red-600"
+            >
+              Semua
+            </button>
+            <button
+              onclick="showCategory('nasional')"
+              class="nav-item whitespace-nowrap px-3 py-2 text-sm font-medium text-gray-600 hover:text-red-600"
+            >
+              Nasional
+            </button>
+            <button
+              onclick="showCategory('internasional')"
+              class="nav-item whitespace-nowrap px-3 py-2 text-sm font-medium text-gray-600 hover:text-red-600"
+            >
+              Internasional
+            </button>
+            <button
+              onclick="showCategory('ekonomi')"
+              class="nav-item whitespace-nowrap px-3 py-2 text-sm font-medium text-gray-600 hover:text-red-600"
+            >
+              Ekonomi
+            </button>
+            <button
+              onclick="showCategory('olahraga')"
+              class="nav-item whitespace-nowrap px-3 py-2 text-sm font-medium text-gray-600 hover:text-red-600"
+            >
+              Olahraga
+            </button>
+            <button
+              onclick="showCategory('teknologi')"
+              class="nav-item whitespace-nowrap px-3 py-2 text-sm font-medium text-gray-600 hover:text-red-600"
+            >
+              Teknologi
+            </button>
+            <button
+              onclick="showCategory('lifestyle')"
+              class="nav-item whitespace-nowrap px-3 py-2 text-sm font-medium text-gray-600 hover:text-red-600"
+            >
+              Lifestyle
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Breaking News Ticker -->
+      <div class="bg-red-600 text-white py-2 overflow-hidden">
+        <div class="container mx-auto px-4 flex items-center">
+          <span
+            class="bg-white text-red-600 px-3 py-1 text-xs font-bold rounded mr-4"
+            >BREAKING</span
+          >
+          <div class="flex-1 overflow-hidden">
+            <div class="ticker-content whitespace-nowrap">
+              <span id="breaking-news"
+                >Presiden Indonesia mengumumkan kebijakan ekonomi baru • Gempa
+                6.2 SR guncang Jawa Barat • Tim nasional Indonesia lolos ke
+                final • Teknologi AI terbaru diluncurkan</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+      <!-- Ad Banner Top -->
+      <div
+        class="bg-gray-200 h-24 rounded-lg mb-8 flex items-center justify-center text-gray-500"
+      >
+        <span>Banner Iklan 728x90</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <!-- Main Content Area -->
+        <div class="lg:col-span-3">
+          <!-- Headline News -->
+          <section class="mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Main Headline -->
+              <article class="md:col-span-1">
+                <div
+                  class="relative overflow-hidden rounded-lg article-hover cursor-pointer"
+                  onclick="showArticle(1)"
+                >
+                  <div
+                    class="bg-gradient-to-r from-blue-500 to-purple-600 h-64 flex items-center justify-center text-white"
+                  >
+                    <div class="text-center p-6">
+                      <i
+                        data-lucide="newspaper"
+                        class="w-16 h-16 mx-auto mb-4"
+                      ></i>
+                      <p class="text-sm opacity-90">Gambar Berita Utama</p>
+                    </div>
+                  </div>
+                  <div
+                    class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6"
+                  >
+                    <span
+                      class="bg-red-600 text-white px-2 py-1 text-xs rounded"
+                      >NASIONAL</span
+                    >
+                    <h2 class="text-white text-xl font-bold mt-2 leading-tight">
+                      Pemerintah Luncurkan Program Digitalisasi UMKM Nasional
+                    </h2>
+                    <p class="text-gray-200 text-sm mt-2">
+                      Kementerian Koperasi dan UKM mengumumkan program
+                      digitalisasi untuk 10 juta UMKM di seluruh Indonesia...
+                    </p>
+                    <div class="flex items-center mt-3 text-gray-300 text-xs">
+                      <span>Admin BeritaKini</span>
+                      <span class="mx-2">•</span>
+                      <span>2 jam yang lalu</span>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Secondary Headlines -->
+              <div class="space-y-4">
+                <article
+                  class="flex space-x-4 article-hover cursor-pointer p-4 bg-white rounded-lg"
+                  onclick="showArticle(2)"
+                >
+                  <div
+                    class="bg-gradient-to-r from-green-500 to-teal-600 w-24 h-20 rounded flex-shrink-0 flex items-center justify-center text-white"
+                  >
+                    <i data-lucide="trending-up" class="w-8 h-8"></i>
+                  </div>
+                  <div class="flex-1">
+                    <span
+                      class="bg-green-100 text-green-800 px-2 py-1 text-xs rounded"
+                      >EKONOMI</span
+                    >
+                    <h3 class="font-semibold text-gray-900 mt-1 leading-tight">
+                      Rupiah Menguat Terhadap Dolar AS di Penutupan Perdagangan
+                    </h3>
+                    <p class="text-gray-600 text-sm mt-1">
+                      Bank Indonesia optimis stabilitas nilai tukar...
+                    </p>
+                    <div class="flex items-center mt-2 text-gray-500 text-xs">
+                      <span>3 jam yang lalu</span>
+                    </div>
+                  </div>
+                </article>
+
+                <article
+                  class="flex space-x-4 article-hover cursor-pointer p-4 bg-white rounded-lg"
+                  onclick="showArticle(3)"
+                >
+                  <div
+                    class="bg-gradient-to-r from-orange-500 to-red-600 w-24 h-20 rounded flex-shrink-0 flex items-center justify-center text-white"
+                  >
+                    <i data-lucide="globe" class="w-8 h-8"></i>
+                  </div>
+                  <div class="flex-1">
+                    <span
+                      class="bg-orange-100 text-orange-800 px-2 py-1 text-xs rounded"
+                      >INTERNASIONAL</span
+                    >
+                    <h3 class="font-semibold text-gray-900 mt-1 leading-tight">
+                      KTT G20 Bahas Isu Perubahan Iklim dan Energi Terbarukan
+                    </h3>
+                    <p class="text-gray-600 text-sm mt-1">
+                      Para pemimpin dunia sepakat untuk...
+                    </p>
+                    <div class="flex items-center mt-2 text-gray-500 text-xs">
+                      <span>4 jam yang lalu</span>
+                    </div>
+                  </div>
+                </article>
+
+                <article
+                  class="flex space-x-4 article-hover cursor-pointer p-4 bg-white rounded-lg"
+                  onclick="showArticle(4)"
+                >
+                  <div
+                    class="bg-gradient-to-r from-purple-500 to-pink-600 w-24 h-20 rounded flex-shrink-0 flex items-center justify-center text-white"
+                  >
+                    <i data-lucide="cpu" class="w-8 h-8"></i>
+                  </div>
+                  <div class="flex-1">
+                    <span
+                      class="bg-purple-100 text-purple-800 px-2 py-1 text-xs rounded"
+                      >TEKNOLOGI</span
+                    >
+                    <h3 class="font-semibold text-gray-900 mt-1 leading-tight">
+                      Startup Indonesia Raih Pendanaan Seri A Senilai $50 Juta
+                    </h3>
+                    <p class="text-gray-600 text-sm mt-1">
+                      Platform fintech lokal berhasil menarik investor...
+                    </p>
+                    <div class="flex items-center mt-2 text-gray-500 text-xs">
+                      <span>5 jam yang lalu</span>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <!-- Ad Banner Middle -->
+          <div
+            class="bg-gray-200 h-20 rounded-lg mb-8 flex items-center justify-center text-gray-500"
+          >
+            <span>Banner Iklan 728x60</span>
+          </div>
+
+          <!-- Latest News -->
+          <section class="mb-8">
+            <div class="flex items-center justify-between mb-6">
+              <h2 class="text-2xl font-bold text-gray-900">Berita Terbaru</h2>
+              <button
+                class="text-red-600 hover:text-red-700 text-sm font-medium"
+              >
+                Lihat Semua
+              </button>
+            </div>
+
+            <div
+              id="articles-container"
+              class="grid grid-cols-1 md:grid-cols-2 gap-6"
+            >
+              <!-- Articles will be populated by JavaScript -->
+            </div>
+
+            <!-- Load More Button -->
+            <div class="text-center mt-8">
+              <button
+                onclick="loadMoreArticles()"
+                class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Muat Lebih Banyak
+              </button>
+            </div>
+          </section>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="lg:col-span-1">
+          <!-- Ad Banner Sidebar -->
+          <div
+            class="bg-gray-200 h-64 rounded-lg mb-6 flex items-center justify-center text-gray-500"
+          >
+            <span>Banner Iklan 300x250</span>
+          </div>
+
+          <!-- Popular Articles -->
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+              <i
+                data-lucide="trending-up"
+                class="w-5 h-5 mr-2 text-red-600"
+              ></i>
+              Berita Populer
+            </h3>
+            <div id="popular-articles" class="space-y-4">
+              <!-- Popular articles will be populated by JavaScript -->
+            </div>
+          </div>
+
+          <!-- Categories -->
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+              <i data-lucide="folder" class="w-5 h-5 mr-2 text-red-600"></i>
+              Kategori
+            </h3>
+            <div class="space-y-2">
+              <a
+                href="#"
+                class="flex items-center justify-between text-gray-600 hover:text-red-600 py-2"
+              >
+                <span>Nasional</span>
+                <span
+                  class="bg-gray-100 text-gray-600 px-2 py-1 text-xs rounded"
+                  >245</span
+                >
+              </a>
+              <a
+                href="#"
+                class="flex items-center justify-between text-gray-600 hover:text-red-600 py-2"
+              >
+                <span>Internasional</span>
+                <span
+                  class="bg-gray-100 text-gray-600 px-2 py-1 text-xs rounded"
+                  >189</span
+                >
+              </a>
+              <a
+                href="#"
+                class="flex items-center justify-between text-gray-600 hover:text-red-600 py-2"
+              >
+                <span>Ekonomi</span>
+                <span
+                  class="bg-gray-100 text-gray-600 px-2 py-1 text-xs rounded"
+                  >156</span
+                >
+              </a>
+              <a
+                href="#"
+                class="flex items-center justify-between text-gray-600 hover:text-red-600 py-2"
+              >
+                <span>Olahraga</span>
+                <span
+                  class="bg-gray-100 text-gray-600 px-2 py-1 text-xs rounded"
+                  >134</span
+                >
+              </a>
+              <a
+                href="#"
+                class="flex items-center justify-between text-gray-600 hover:text-red-600 py-2"
+              >
+                <span>Teknologi</span>
+                <span
+                  class="bg-gray-100 text-gray-600 px-2 py-1 text-xs rounded"
+                  >98</span
+                >
+              </a>
+            </div>
+          </div>
+
+          <!-- Newsletter -->
+          <div
+            class="bg-gradient-to-r from-red-600 to-red-700 rounded-lg p-6 text-white mb-6"
+          >
+            <h3 class="text-lg font-bold mb-2">Newsletter</h3>
+            <p class="text-red-100 text-sm mb-4">
+              Dapatkan berita terbaru langsung di email Anda
+            </p>
+            <div class="space-y-3">
+              <input
+                type="email"
+                placeholder="Email Anda"
+                class="w-full px-3 py-2 rounded text-gray-900 text-sm"
+              />
+              <button
+                class="w-full bg-white text-red-600 py-2 rounded font-medium hover:bg-gray-100 transition-colors"
+              >
+                Berlangganan
+              </button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div>
+            <h3 class="text-xl font-bold text-red-500 mb-4">BeritaKini</h3>
+            <p class="text-gray-400 text-sm mb-4">
+              Portal berita terpercaya yang menyajikan informasi terkini dari
+              Indonesia dan dunia dengan akurat dan berimbang.
+            </p>
+            <div class="flex space-x-4">
+              <a href="#" class="text-gray-400 hover:text-white"
+                ><i data-lucide="facebook" class="w-5 h-5"></i
+              ></a>
+              <a href="#" class="text-gray-400 hover:text-white"
+                ><i data-lucide="twitter" class="w-5 h-5"></i
+              ></a>
+              <a href="#" class="text-gray-400 hover:text-white"
+                ><i data-lucide="instagram" class="w-5 h-5"></i
+              ></a>
+              <a href="#" class="text-gray-400 hover:text-white"
+                ><i data-lucide="youtube" class="w-5 h-5"></i
+              ></a>
+            </div>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-4">Kategori</h4>
+            <ul class="space-y-2 text-sm text-gray-400">
+              <li><a href="#" class="hover:text-white">Nasional</a></li>
+              <li><a href="#" class="hover:text-white">Internasional</a></li>
+              <li><a href="#" class="hover:text-white">Ekonomi</a></li>
+              <li><a href="#" class="hover:text-white">Olahraga</a></li>
+              <li><a href="#" class="hover:text-white">Teknologi</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-4">Layanan</h4>
+            <ul class="space-y-2 text-sm text-gray-400">
+              <li><a href="#" class="hover:text-white">RSS Feed</a></li>
+              <li><a href="#" class="hover:text-white">Newsletter</a></li>
+              <li><a href="#" class="hover:text-white">Mobile App</a></li>
+              <li><a href="#" class="hover:text-white">API</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-4">Tentang</h4>
+            <ul class="space-y-2 text-sm text-gray-400">
+              <li><a href="#" class="hover:text-white">Tentang Kami</a></li>
+              <li><a href="#" class="hover:text-white">Kontak</a></li>
+              <li><a href="#" class="hover:text-white">Karir</a></li>
+              <li>
+                <a href="#" class="hover:text-white">Kebijakan Privasi</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div
+          class="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400"
+        >
+          <p>&copy; 2024 BeritaKini. Hak cipta dilindungi undang-undang.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Article Modal -->
+    <div
+      id="article-modal"
+      class="modal fixed inset-0 bg-black bg-opacity-50 z-50 items-center justify-center p-4"
+    >
+      <div
+        class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+      >
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-4">
+              <span
+                id="modal-category"
+                class="bg-red-100 text-red-800 px-3 py-1 text-sm rounded"
+              ></span>
+              <span id="modal-date" class="text-gray-500 text-sm"></span>
+            </div>
+            <button
+              onclick="closeArticleModal()"
+              class="text-gray-500 hover:text-gray-700"
+            >
+              <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+          </div>
+
+          <h1
+            id="modal-title"
+            class="text-3xl font-bold text-gray-900 mb-4"
+          ></h1>
+
+          <div class="flex items-center space-x-4 mb-6 text-sm text-gray-600">
+            <div class="flex items-center space-x-2">
+              <i data-lucide="user" class="w-4 h-4"></i>
+              <span id="modal-author"></span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <i data-lucide="clock" class="w-4 h-4"></i>
+              <span id="modal-read-time">5 menit baca</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <i data-lucide="eye" class="w-4 h-4"></i>
+              <span id="modal-views">1,234 views</span>
+            </div>
+          </div>
+
+          <div id="modal-image" class="mb-6">
+            <div
+              class="bg-gradient-to-r from-blue-500 to-purple-600 h-64 rounded-lg flex items-center justify-center text-white"
+            >
+              <div class="text-center">
+                <i data-lucide="image" class="w-16 h-16 mx-auto mb-2"></i>
+                <p>Gambar Artikel</p>
+              </div>
+            </div>
+          </div>
+
+          <div id="modal-content" class="prose max-w-none mb-8">
+            <!-- Article content will be populated here -->
+          </div>
+
+          <!-- Social Share -->
+          <div class="border-t border-b border-gray-200 py-4 mb-6">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-4">
+                <span class="text-gray-600 font-medium">Bagikan:</span>
+                <button
+                  class="flex items-center space-x-2 bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700"
+                >
+                  <i data-lucide="facebook" class="w-4 h-4"></i>
+                  <span>Facebook</span>
+                </button>
+                <button
+                  class="flex items-center space-x-2 bg-sky-500 text-white px-3 py-2 rounded hover:bg-sky-600"
+                >
+                  <i data-lucide="twitter" class="w-4 h-4"></i>
+                  <span>Twitter</span>
+                </button>
+                <button
+                  class="flex items-center space-x-2 bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700"
+                >
+                  <i data-lucide="share-2" class="w-4 h-4"></i>
+                  <span>WhatsApp</span>
+                </button>
+              </div>
+              <button
+                onclick="bookmarkArticle()"
+                class="flex items-center space-x-2 text-gray-600 hover:text-red-600"
+              >
+                <i data-lucide="bookmark" class="w-4 h-4"></i>
+                <span>Simpan</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Comments Section -->
+          <div class="mb-6">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Komentar (12)</h3>
+
+            <!-- Comment Form -->
+            <div class="bg-gray-50 rounded-lg p-4 mb-6">
+              <textarea
+                placeholder="Tulis komentar Anda..."
+                class="w-full p-3 border border-gray-300 rounded-lg resize-none"
+                rows="3"
+              ></textarea>
+              <div class="flex justify-end mt-3">
+                <button
+                  class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                >
+                  Kirim Komentar
+                </button>
+              </div>
+            </div>
+
+            <!-- Comments List -->
+            <div class="space-y-4">
+              <div class="border-b border-gray-200 pb-4">
+                <div class="flex items-start space-x-3">
+                  <div
+                    class="bg-gray-300 w-10 h-10 rounded-full flex items-center justify-center"
+                  >
+                    <i data-lucide="user" class="w-5 h-5 text-gray-600"></i>
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex items-center space-x-2 mb-1">
+                      <span class="font-medium text-gray-900">Ahmad Rizki</span>
+                      <span class="text-gray-500 text-sm">2 jam yang lalu</span>
+                    </div>
+                    <p class="text-gray-700">
+                      Artikel yang sangat informatif! Terima kasih atas
+                      informasinya.
+                    </p>
+                    <div class="flex items-center space-x-4 mt-2 text-sm">
+                      <button class="text-gray-500 hover:text-red-600">
+                        Balas
+                      </button>
+                      <button class="text-gray-500 hover:text-red-600">
+                        Like (5)
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Related Articles -->
+          <div>
+            <h3 class="text-xl font-bold text-gray-900 mb-4">
+              Artikel Terkait
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <article
+                class="flex space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer"
+              >
+                <div
+                  class="bg-gradient-to-r from-green-500 to-teal-600 w-16 h-16 rounded flex-shrink-0 flex items-center justify-center text-white"
+                >
+                  <i data-lucide="trending-up" class="w-6 h-6"></i>
+                </div>
+                <div class="flex-1">
+                  <h4 class="font-medium text-gray-900 text-sm leading-tight">
+                    Ekonomi Digital Indonesia Tumbuh Pesat
+                  </h4>
+                  <p class="text-gray-600 text-xs mt-1">3 jam yang lalu</p>
+                </div>
+              </article>
+              <article
+                class="flex space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer"
+              >
+                <div
+                  class="bg-gradient-to-r from-purple-500 to-pink-600 w-16 h-16 rounded flex-shrink-0 flex items-center justify-center text-white"
+                >
+                  <i data-lucide="cpu" class="w-6 h-6"></i>
+                </div>
+                <div class="flex-1">
+                  <h4 class="font-medium text-gray-900 text-sm leading-tight">
+                    Inovasi Teknologi Blockchain di Indonesia
+                  </h4>
+                  <p class="text-gray-600 text-xs mt-1">5 jam yang lalu</p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div
+      id="login-modal"
+      class="modal fixed inset-0 bg-black bg-opacity-50 z-50 items-center justify-center p-4"
+    >
+      <div class="bg-white rounded-lg max-w-md w-full p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-bold text-gray-900">Login</h2>
+          <button
+            onclick="closeLoginModal()"
+            class="text-gray-500 hover:text-gray-700"
+          >
+            <i data-lucide="x" class="w-6 h-6"></i>
+          </button>
+        </div>
+
+        <form onsubmit="handleLogin(event)" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Email</label
+            >
+            <input
+              type="email"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Password</label
+            >
+            <input
+              type="password"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+          </div>
+          <button
+            type="submit"
+            class="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700"
+          >
+            Login
+          </button>
+        </form>
+
+        <div class="mt-4 text-center">
+          <a href="#" class="text-red-600 hover:text-red-700 text-sm"
+            >Lupa password?</a
+          >
+          <span class="text-gray-500 mx-2">|</span>
+          <a href="#" class="text-red-600 hover:text-red-700 text-sm"
+            >Daftar akun baru</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div
+      id="admin-panel"
+      class="admin-panel fixed inset-0 bg-white z-50 overflow-y-auto"
+    >
+      <div class="min-h-screen bg-gray-100">
+        <!-- Admin Header -->
+        <header class="bg-white shadow-sm border-b">
+          <div class="px-6 py-4 flex items-center justify-between">
+            <h1 class="text-2xl font-bold text-gray-900">
+              Admin Panel - BeritaKini
+            </h1>
+            <button
+              onclick="hideAdminPanel()"
+              class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+            >
+              Kembali ke Website
+            </button>
+          </div>
+        </header>
+
+        <div class="flex">
+          <!-- Admin Sidebar -->
+          <aside class="w-64 bg-white shadow-sm min-h-screen">
+            <nav class="p-4">
+              <ul class="space-y-2">
+                <li>
+                  <button
+                    onclick="showAdminSection('dashboard')"
+                    class="admin-nav-item active w-full text-left px-4 py-2 rounded bg-red-100 text-red-700"
+                  >
+                    Dashboard
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onclick="showAdminSection('articles')"
+                    class="admin-nav-item w-full text-left px-4 py-2 rounded text-gray-700 hover:bg-gray-100"
+                  >
+                    Kelola Artikel
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onclick="showAdminSection('categories')"
+                    class="admin-nav-item w-full text-left px-4 py-2 rounded text-gray-700 hover:bg-gray-100"
+                  >
+                    Kategori
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onclick="showAdminSection('users')"
+                    class="admin-nav-item w-full text-left px-4 py-2 rounded text-gray-700 hover:bg-gray-100"
+                  >
+                    Pengguna
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onclick="showAdminSection('ads')"
+                    class="admin-nav-item w-full text-left px-4 py-2 rounded text-gray-700 hover:bg-gray-100"
+                  >
+                    Iklan
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onclick="showAdminSection('analytics')"
+                    class="admin-nav-item w-full text-left px-4 py-2 rounded text-gray-700 hover:bg-gray-100"
+                  >
+                    Analytics
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </aside>
+
+          <!-- Admin Content -->
+          <main class="flex-1 p-6">
+            <!-- Dashboard Section -->
+            <div id="admin-dashboard" class="admin-section">
+              <h2 class="text-xl font-bold text-gray-900 mb-6">Dashboard</h2>
+
+              <!-- Stats Cards -->
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-lg shadow">
+                  <div class="flex items-center">
+                    <div class="bg-blue-100 p-3 rounded-full">
+                      <i
+                        data-lucide="file-text"
+                        class="w-6 h-6 text-blue-600"
+                      ></i>
+                    </div>
+                    <div class="ml-4">
+                      <p class="text-sm text-gray-600">Total Artikel</p>
+                      <p class="text-2xl font-bold text-gray-900">1,234</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                  <div class="flex items-center">
+                    <div class="bg-green-100 p-3 rounded-full">
+                      <i data-lucide="users" class="w-6 h-6 text-green-600"></i>
+                    </div>
+                    <div class="ml-4">
+                      <p class="text-sm text-gray-600">Total Pengguna</p>
+                      <p class="text-2xl font-bold text-gray-900">45,678</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                  <div class="flex items-center">
+                    <div class="bg-yellow-100 p-3 rounded-full">
+                      <i data-lucide="eye" class="w-6 h-6 text-yellow-600"></i>
+                    </div>
+                    <div class="ml-4">
+                      <p class="text-sm text-gray-600">Views Hari Ini</p>
+                      <p class="text-2xl font-bold text-gray-900">89,012</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                  <div class="flex items-center">
+                    <div class="bg-red-100 p-3 rounded-full">
+                      <i
+                        data-lucide="message-circle"
+                        class="w-6 h-6 text-red-600"
+                      ></i>
+                    </div>
+                    <div class="ml-4">
+                      <p class="text-sm text-gray-600">Komentar Baru</p>
+                      <p class="text-2xl font-bold text-gray-900">156</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recent Activity -->
+              <div class="bg-white rounded-lg shadow">
+                <div class="p-6 border-b">
+                  <h3 class="text-lg font-semibold text-gray-900">
+                    Aktivitas Terbaru
+                  </h3>
+                </div>
+                <div class="p-6">
+                  <div class="space-y-4">
+                    <div class="flex items-center space-x-3">
+                      <div class="bg-green-100 p-2 rounded-full">
+                        <i
+                          data-lucide="plus"
+                          class="w-4 h-4 text-green-600"
+                        ></i>
+                      </div>
+                      <div>
+                        <p class="text-sm text-gray-900">
+                          Artikel baru "Ekonomi Digital Indonesia"
+                          dipublikasikan
+                        </p>
+                        <p class="text-xs text-gray-500">2 menit yang lalu</p>
+                      </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                      <div class="bg-blue-100 p-2 rounded-full">
+                        <i data-lucide="edit" class="w-4 h-4 text-blue-600"></i>
+                      </div>
+                      <div>
+                        <p class="text-sm text-gray-900">
+                          Artikel "Teknologi AI" diperbarui
+                        </p>
+                        <p class="text-xs text-gray-500">15 menit yang lalu</p>
+                      </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                      <div class="bg-yellow-100 p-2 rounded-full">
+                        <i
+                          data-lucide="user-plus"
+                          class="w-4 h-4 text-yellow-600"
+                        ></i>
+                      </div>
+                      <div>
+                        <p class="text-sm text-gray-900">
+                          Pengguna baru mendaftar
+                        </p>
+                        <p class="text-xs text-gray-500">1 jam yang lalu</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Articles Section -->
+            <div
+              id="admin-articles"
+              class="admin-section"
+              style="display: none"
+            >
+              <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-bold text-gray-900">Kelola Artikel</h2>
+                <button
+                  onclick="showCreateArticleForm()"
+                  class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                >
+                  Tambah Artikel Baru
+                </button>
+              </div>
+
+              <!-- Articles Table -->
+              <div class="bg-white rounded-lg shadow overflow-hidden">
+                <table class="w-full">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+                      >
+                        Judul
+                      </th>
+                      <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+                      >
+                        Kategori
+                      </th>
+                      <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+                      >
+                        Penulis
+                      </th>
+                      <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+                      >
+                        Status
+                      </th>
+                      <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+                      >
+                        Tanggal
+                      </th>
+                      <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+                      >
+                        Aksi
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-200">
+                    <tr>
+                      <td class="px-6 py-4">
+                        <div class="text-sm font-medium text-gray-900">
+                          Pemerintah Luncurkan Program Digitalisasi UMKM
+                        </div>
+                      </td>
+                      <td class="px-6 py-4">
+                        <span
+                          class="bg-red-100 text-red-800 px-2 py-1 text-xs rounded"
+                          >Nasional</span
+                        >
+                      </td>
+                      <td class="px-6 py-4 text-sm text-gray-900">
+                        Admin BeritaKini
+                      </td>
+                      <td class="px-6 py-4">
+                        <span
+                          class="bg-green-100 text-green-800 px-2 py-1 text-xs rounded"
+                          >Published</span
+                        >
+                      </td>
+                      <td class="px-6 py-4 text-sm text-gray-500">
+                        2024-01-15
+                      </td>
+                      <td class="px-6 py-4 text-sm">
+                        <button class="text-blue-600 hover:text-blue-900 mr-3">
+                          Edit
+                        </button>
+                        <button class="text-red-600 hover:text-red-900">
+                          Hapus
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-6 py-4">
+                        <div class="text-sm font-medium text-gray-900">
+                          Rupiah Menguat Terhadap Dolar AS
+                        </div>
+                      </td>
+                      <td class="px-6 py-4">
+                        <span
+                          class="bg-green-100 text-green-800 px-2 py-1 text-xs rounded"
+                          >Ekonomi</span
+                        >
+                      </td>
+                      <td class="px-6 py-4 text-sm text-gray-900">
+                        Editor Ekonomi
+                      </td>
+                      <td class="px-6 py-4">
+                        <span
+                          class="bg-green-100 text-green-800 px-2 py-1 text-xs rounded"
+                          >Published</span
+                        >
+                      </td>
+                      <td class="px-6 py-4 text-sm text-gray-500">
+                        2024-01-15
+                      </td>
+                      <td class="px-6 py-4 text-sm">
+                        <button class="text-blue-600 hover:text-blue-900 mr-3">
+                          Edit
+                        </button>
+                        <button class="text-red-600 hover:text-red-900">
+                          Hapus
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Other admin sections would be implemented similarly -->
+            <div
+              id="admin-categories"
+              class="admin-section"
+              style="display: none"
+            >
+              <h2 class="text-xl font-bold text-gray-900 mb-6">
+                Kelola Kategori
+              </h2>
+              <p class="text-gray-600">
+                Fitur kelola kategori akan ditampilkan di sini.
+              </p>
+            </div>
+
+            <div id="admin-users" class="admin-section" style="display: none">
+              <h2 class="text-xl font-bold text-gray-900 mb-6">
+                Kelola Pengguna
+              </h2>
+              <p class="text-gray-600">
+                Fitur kelola pengguna akan ditampilkan di sini.
+              </p>
+            </div>
+
+            <div id="admin-ads" class="admin-section" style="display: none">
+              <h2 class="text-xl font-bold text-gray-900 mb-6">Kelola Iklan</h2>
+              <p class="text-gray-600">
+                Fitur kelola iklan akan ditampilkan di sini.
+              </p>
+            </div>
+
+            <div
+              id="admin-analytics"
+              class="admin-section"
+              style="display: none"
+            >
+              <h2 class="text-xl font-bold text-gray-900 mb-6">Analytics</h2>
+              <p class="text-gray-600">
+                Dashboard analytics akan ditampilkan di sini.
+              </p>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Initialize Lucide icons
+      lucide.createIcons();
+
+      // Sample data
+      const articles = [
+        {
+          id: 1,
+          title: "Pemerintah Luncurkan Program Digitalisasi UMKM Nasional",
+          category: "Nasional",
+          author: "Admin BeritaKini",
+          date: "2 jam yang lalu",
+          excerpt:
+            "Kementerian Koperasi dan UKM mengumumkan program digitalisasi untuk 10 juta UMKM di seluruh Indonesia dengan target selesai dalam 3 tahun ke depan.",
+          content:
+            "Jakarta - Kementerian Koperasi dan Usaha Kecil Menengah (UKM) resmi meluncurkan program digitalisasi UMKM nasional yang menargetkan 10 juta pelaku usaha di seluruh Indonesia. Program ini merupakan bagian dari upaya pemerintah untuk meningkatkan daya saing UMKM di era digital.\n\nMenteri Koperasi dan UKM, Teten Masduki, menjelaskan bahwa program ini akan memberikan pelatihan digital marketing, e-commerce, dan manajemen keuangan digital kepada para pelaku UMKM. 'Kami berkomitmen untuk membantu UMKM Indonesia go digital dan bersaing di pasar global,' ujar Teten dalam konferensi pers di Jakarta, Selasa (15/1).\n\nProgram digitalisasi ini akan dilaksanakan secara bertahap dengan prioritas pada daerah-daerah yang memiliki potensi UMKM tinggi. Pemerintah telah menyiapkan anggaran sebesar Rp 5 triliun untuk mendukung program ini selama tiga tahun ke depan.\n\nSelain pelatihan, program ini juga akan menyediakan akses pembiayaan khusus untuk UMKM yang ingin mengembangkan bisnis digitalnya. Bank-bank BUMN telah berkomitmen untuk menyalurkan kredit dengan bunga rendah khusus untuk program digitalisasi UMKM.\n\nDiharapkan dengan program ini, kontribusi UMKM terhadap PDB Indonesia dapat meningkat dari 60% menjadi 65% dalam lima tahun ke depan.",
+          views: 1234,
+          image: "gradient-blue-purple",
+        },
+        {
+          id: 2,
+          title: "Rupiah Menguat Terhadap Dolar AS di Penutupan Perdagangan",
+          category: "Ekonomi",
+          author: "Editor Ekonomi",
+          date: "3 jam yang lalu",
+          excerpt:
+            "Bank Indonesia optimis stabilitas nilai tukar rupiah akan terus terjaga seiring membaiknya kondisi ekonomi global.",
+          content:
+            "Jakarta - Nilai tukar rupiah terhadap dolar Amerika Serikat (AS) menguat 0,25% di penutupan perdagangan hari ini. Rupiah ditutup pada level Rp 15.650 per dolar AS, menguat dari penutupan sebelumnya di level Rp 15.689 per dolar AS.\n\nPenguatan rupiah ini didorong oleh sentimen positif dari data inflasi AS yang lebih rendah dari perkiraan, serta optimisme terhadap kebijakan moneter Bank Indonesia yang tetap akomodatif.\n\nGubernur Bank Indonesia, Perry Warjiyo, menyatakan bahwa stabilitas nilai tukar rupiah akan terus dijaga melalui berbagai instrumen kebijakan moneter. 'Kami akan terus melakukan intervensi di pasar valuta asing untuk menjaga stabilitas rupiah,' ujar Perry.\n\nAnalis ekonomi dari PT Bank Mandiri, Andry Asmoro, menilai penguatan rupiah hari ini sejalan dengan tren penguatan mata uang emerging market lainnya. 'Sentimen positif dari penurunan inflasi AS memberikan ruang bagi mata uang emerging market untuk menguat,' jelasnya.\n\nBank Indonesia memproyeksikan nilai tukar rupiah akan bergerak stabil di kisaran Rp 15.500-15.800 per dolar AS hingga akhir tahun ini, didukung oleh fundamental ekonomi Indonesia yang solid.",
+          views: 892,
+          image: "gradient-green-teal",
+        },
+        {
+          id: 3,
+          title: "KTT G20 Bahas Isu Perubahan Iklim dan Energi Terbarukan",
+          category: "Internasional",
+          author: "Koresponden Internasional",
+          date: "4 jam yang lalu",
+          excerpt:
+            "Para pemimpin dunia sepakat untuk mempercepat transisi energi dan mengurangi emisi karbon global.",
+          content:
+            "New Delhi - Konferensi Tingkat Tinggi (KTT) G20 di India membahas isu krusial perubahan iklim dan transisi energi terbarukan. Para pemimpin negara-negara G20 sepakat untuk mempercepat upaya pengurangan emisi karbon global dan meningkatkan investasi di sektor energi bersih.\n\nPresiden Indonesia, Joko Widodo, dalam pidatonya menekankan pentingnya kerja sama internasional dalam mengatasi perubahan iklim. 'Indonesia berkomitmen untuk mencapai net zero emission pada 2060 dan siap berkolaborasi dengan negara-negara G20 lainnya,' ujar Presiden Jokowi.\n\nDalam KTT ini, disepakati pembentukan dana khusus senilai 100 miliar dolar AS untuk mendukung negara-negara berkembang dalam transisi energi. Dana ini akan digunakan untuk pengembangan infrastruktur energi terbarukan dan teknologi ramah lingkungan.\n\nPerdana Menteri India, Narendra Modi, sebagai tuan rumah menyatakan bahwa India akan meningkatkan kapasitas energi terbarukan menjadi 500 GW pada 2030. 'Ini adalah komitmen nyata India untuk masa depan yang lebih hijau,' kata Modi.\n\nKTT G20 juga membahas pentingnya transfer teknologi hijau dari negara maju ke negara berkembang untuk mempercepat transisi energi global.",
+          views: 756,
+          image: "gradient-orange-red",
+        },
+        {
+          id: 4,
+          title: "Startup Indonesia Raih Pendanaan Seri A Senilai $50 Juta",
+          category: "Teknologi",
+          author: "Tech Reporter",
+          date: "5 jam yang lalu",
+          excerpt:
+            "Platform fintech lokal berhasil menarik investor internasional untuk ekspansi ke Asia Tenggara.",
+          content:
+            "Jakarta - Startup fintech Indonesia, TechPay, berhasil meraih pendanaan Seri A senilai 50 juta dolar AS dari konsorsium investor internasional. Pendanaan ini akan digunakan untuk ekspansi ke negara-negara Asia Tenggara dan pengembangan produk baru.\n\nCEO TechPay, Budi Santoso, mengatakan bahwa pendanaan ini merupakan validasi terhadap model bisnis yang telah dibangun selama tiga tahun terakhir. 'Kami bangga bisa menarik perhatian investor internasional dan ini akan mempercepat misi kami untuk financial inclusion di Asia Tenggara,' ujar Budi.\n\nTechPay adalah platform pembayaran digital yang fokus pada segmen UMKM dan masyarakat unbanked. Platform ini telah melayani lebih dari 2 juta pengguna di Indonesia dengan volume transaksi mencapai 1 miliar dolar AS per tahun.\n\nInvestor utama dalam putaran pendanaan ini adalah Sequoia Capital Southeast Asia dan Temasek Holdings. Managing Partner Sequoia Capital SEA, Shailendra Singh, menyatakan optimismenya terhadap potensi TechPay di pasar regional.\n\nDengan pendanaan ini, TechPay menargetkan untuk hadir di Thailand, Vietnam, dan Filipina dalam 18 bulan ke depan. Perusahaan juga berencana menambah 500 karyawan baru untuk mendukung ekspansi tersebut.",
+          views: 634,
+          image: "gradient-purple-pink",
+        },
+        {
+          id: 5,
+          title: "Tim Nasional Indonesia Lolos ke Final Piala AFF 2024",
+          category: "Olahraga",
+          author: "Sports Editor",
+          date: "6 jam yang lalu",
+          excerpt:
+            "Garuda Muda berhasil mengalahkan Thailand 2-1 di semifinal dan akan menghadapi Vietnam di partai puncak.",
+          content:
+            "Bangkok - Tim Nasional Indonesia berhasil lolos ke final Piala AFF 2024 setelah mengalahkan Thailand 2-1 dalam pertandingan semifinal yang berlangsung dramatis di Stadion Rajamangala, Bangkok.\n\nGol kemenangan Indonesia dicetak oleh Egy Maulana Vikri pada menit ke-89 setelah sebelumnya Witan Sulaeman membuka keunggulan di menit ke-23. Thailand sempat menyamakan kedudukan melalui Chanathip Songkrasin di menit ke-67.\n\nPelatih Timnas Indonesia, Shin Tae-yong, mengapresiasi perjuangan anak asuhnya. 'Para pemain menunjukkan mental juara dan tidak pernah menyerah hingga peluit akhir. Ini adalah hasil kerja keras selama persiapan,' ujar Shin.\n\nDi final nanti, Indonesia akan menghadapi Vietnam yang berhasil mengalahkan Malaysia 3-0 di semifinal lainnya. Pertandingan final dijadwalkan berlangsung pada Minggu (20/1) di Stadion Gelora Bung Karno, Jakarta.\n\nKapten Timnas Indonesia, Asnawi Mangkualam, menyatakan optimismenya untuk meraih gelar juara. 'Kami sudah sampai di final, sekarang tinggal satu langkah lagi untuk membawa trofi pulang ke Indonesia,' kata Asnawi.\n\nDukungan suporter Indonesia yang memadati stadion menjadi motivasi tambahan bagi para pemain untuk tampil maksimal di partai final nanti.",
+          views: 1456,
+          image: "gradient-indigo-blue",
+        },
+      ];
+
+      const popularArticles = [
+        {
+          id: 1,
+          title: "Pemerintah Luncurkan Program Digitalisasi UMKM",
+          views: 1234,
+          time: "2 jam yang lalu",
+        },
+        {
+          id: 2,
+          title: "Rupiah Menguat Terhadap Dolar AS",
+          views: 892,
+          time: "3 jam yang lalu",
+        },
+        {
+          id: 3,
+          title: "KTT G20 Bahas Perubahan Iklim",
+          views: 756,
+          time: "4 jam yang lalu",
+        },
+        {
+          id: 4,
+          title: "Startup Indonesia Raih Pendanaan $50 Juta",
+          views: 634,
+          time: "5 jam yang lalu",
+        },
+        {
+          id: 5,
+          title: "Timnas Indonesia Lolos ke Final",
+          views: 1456,
+          time: "6 jam yang lalu",
+        },
+      ];
+
+      let currentCategory = "semua";
+      let articlesLoaded = 4;
+
+      // Initialize the page
+      document.addEventListener("DOMContentLoaded", function () {
+        updateCurrentDate();
+        loadArticles();
+        loadPopularArticles();
+        setInterval(updateCurrentDate, 60000); // Update every minute
+      });
+
+      function updateCurrentDate() {
+        const now = new Date();
+        const options = {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        };
+        document.getElementById("current-date").textContent =
+          now.toLocaleDateString("id-ID", options);
+      }
+
+      function loadArticles() {
+        const container = document.getElementById("articles-container");
+        const filteredArticles =
+          currentCategory === "semua"
+            ? articles.slice(0, articlesLoaded)
+            : articles
+                .filter(
+                  (article) =>
+                    article.category.toLowerCase() === currentCategory
+                )
+                .slice(0, articlesLoaded);
+
+        container.innerHTML = "";
+
+        filteredArticles.forEach((article) => {
+          const articleElement = createArticleElement(article);
+          container.appendChild(articleElement);
+        });
+      }
+
+      function createArticleElement(article) {
+        const article_div = document.createElement("article");
+        article_div.className =
+          "bg-white rounded-lg overflow-hidden article-hover cursor-pointer";
+        article_div.onclick = () => showArticle(article.id);
+
+        const gradientClass = getGradientClass(article.image);
+
+        article_div.innerHTML = `
+                <div class="${gradientClass} h-48 flex items-center justify-center text-white">
+                    <div class="text-center">
+                        <i data-lucide="image" class="w-12 h-12 mx-auto mb-2"></i>
+                        <p class="text-sm opacity-90">Gambar Artikel</p>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <span class="bg-${getCategoryColor(
+                      article.category
+                    )}-100 text-${getCategoryColor(
+          article.category
+        )}-800 px-2 py-1 text-xs rounded">${article.category.toUpperCase()}</span>
+                    <h3 class="font-semibold text-gray-900 mt-2 mb-2 leading-tight">${
+                      article.title
+                    }</h3>
+                    <p class="text-gray-600 text-sm mb-3 line-clamp-2">${
+                      article.excerpt
+                    }</p>
+                    <div class="flex items-center justify-between text-xs text-gray-500">
+                        <span>${article.author}</span>
+                        <span>${article.date}</span>
+                    </div>
+                </div>
+            `;
+
+        return article_div;
+      }
+
+      function getGradientClass(imageType) {
+        const gradients = {
+          "gradient-blue-purple":
+            "bg-gradient-to-r from-blue-500 to-purple-600",
+          "gradient-green-teal": "bg-gradient-to-r from-green-500 to-teal-600",
+          "gradient-orange-red": "bg-gradient-to-r from-orange-500 to-red-600",
+          "gradient-purple-pink":
+            "bg-gradient-to-r from-purple-500 to-pink-600",
+          "gradient-indigo-blue":
+            "bg-gradient-to-r from-indigo-500 to-blue-600",
+        };
+        return (
+          gradients[imageType] || "bg-gradient-to-r from-gray-500 to-gray-600"
+        );
+      }
+
+      function getCategoryColor(category) {
+        const colors = {
+          Nasional: "red",
+          Internasional: "orange",
+          Ekonomi: "green",
+          Olahraga: "blue",
+          Teknologi: "purple",
+          Lifestyle: "pink",
+        };
+        return colors[category] || "gray";
+      }
+
+      function loadPopularArticles() {
+        const container = document.getElementById("popular-articles");
+        container.innerHTML = "";
+
+        popularArticles.forEach((article, index) => {
+          const articleElement = document.createElement("div");
+          articleElement.className =
+            "flex items-start space-x-3 cursor-pointer hover:bg-gray-50 p-2 rounded";
+          articleElement.onclick = () => showArticle(article.id);
+
+          articleElement.innerHTML = `
+                    <div class="bg-red-100 text-red-600 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
+                        ${index + 1}
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-sm font-medium text-gray-900 leading-tight mb-1">${
+                          article.title
+                        }</h4>
+                        <div class="flex items-center space-x-2 text-xs text-gray-500">
+                            <span>${article.views.toLocaleString()} views</span>
+                            <span>•</span>
+                            <span>${article.time}</span>
+                        </div>
+                    </div>
+                `;
+
+          container.appendChild(articleElement);
+        });
+      }
+
+      function showCategory(category) {
+        currentCategory = category;
+        articlesLoaded = 4;
+
+        // Update navigation
+        document.querySelectorAll(".nav-item").forEach((item) => {
+          item.classList.remove(
+            "active",
+            "text-red-600",
+            "border-b-2",
+            "border-red-600"
+          );
+          item.classList.add("text-gray-600");
+        });
+
+        event.target.classList.add(
+          "active",
+          "text-red-600",
+          "border-b-2",
+          "border-red-600"
+        );
+        event.target.classList.remove("text-gray-600");
+
+        loadArticles();
+      }
+
+      function loadMoreArticles() {
+        articlesLoaded += 4;
+        loadArticles();
+      }
+
+      function searchArticles() {
+        const query = document
+          .getElementById("search-input")
+          .value.toLowerCase();
+        if (query.trim() === "") return;
+
+        const results = articles.filter(
+          (article) =>
+            article.title.toLowerCase().includes(query) ||
+            article.content.toLowerCase().includes(query)
+        );
+
+        const container = document.getElementById("articles-container");
+        container.innerHTML = "";
+
+        if (results.length === 0) {
+          container.innerHTML =
+            '<div class="col-span-2 text-center py-8 text-gray-500">Tidak ada artikel yang ditemukan</div>';
+          return;
+        }
+
+        results.forEach((article) => {
+          const articleElement = createArticleElement(article);
+          container.appendChild(articleElement);
+        });
+      }
+
+      function showArticle(articleId) {
+        const article = articles.find((a) => a.id === articleId);
+        if (!article) return;
+
+        document.getElementById("modal-category").textContent =
+          article.category.toUpperCase();
+        document.getElementById("modal-date").textContent = article.date;
+        document.getElementById("modal-title").textContent = article.title;
+        document.getElementById("modal-author").textContent = article.author;
+        document.getElementById(
+          "modal-views"
+        ).textContent = `${article.views.toLocaleString()} views`;
+
+        const content = document.getElementById("modal-content");
+        content.innerHTML = article.content
+          .split("\n")
+          .map((paragraph) =>
+            paragraph.trim() ? `<p class="mb-4">${paragraph}</p>` : ""
+          )
+          .join("");
+
+        document.getElementById("article-modal").classList.add("active");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeArticleModal() {
+        document.getElementById("article-modal").classList.remove("active");
+        document.body.style.overflow = "auto";
+      }
+
+      function showLoginModal() {
+        document.getElementById("login-modal").classList.add("active");
+      }
+
+      function closeLoginModal() {
+        document.getElementById("login-modal").classList.remove("active");
+      }
+
+      function handleLogin(event) {
+        event.preventDefault();
+        alert("Login berhasil! (Demo)");
+        closeLoginModal();
+      }
+
+      function bookmarkArticle() {
+        alert("Artikel berhasil disimpan! (Demo)");
+      }
+
+      function toggleDarkMode() {
+        document.documentElement.classList.toggle("dark");
+        alert("Mode gelap/terang akan diimplementasi! (Demo)");
+      }
+
+      function showAdminPanel() {
+        document.getElementById("admin-panel").classList.add("active");
+        document.body.style.overflow = "hidden";
+      }
+
+      function hideAdminPanel() {
+        document.getElementById("admin-panel").classList.remove("active");
+        document.body.style.overflow = "auto";
+      }
+
+      function showAdminSection(section) {
+        // Hide all sections
+        document.querySelectorAll(".admin-section").forEach((sec) => {
+          sec.style.display = "none";
+        });
+
+        // Remove active class from all nav items
+        document.querySelectorAll(".admin-nav-item").forEach((item) => {
+          item.classList.remove("active", "bg-red-100", "text-red-700");
+          item.classList.add("text-gray-700");
+        });
+
+        // Show selected section
+        document.getElementById(`admin-${section}`).style.display = "block";
+
+        // Add active class to clicked nav item
+        event.target.classList.add("active", "bg-red-100", "text-red-700");
+        event.target.classList.remove("text-gray-700");
+      }
+
+      function showCreateArticleForm() {
+        alert("Form tambah artikel akan ditampilkan! (Demo)");
+      }
+
+      // Handle escape key to close modals
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+          closeArticleModal();
+          closeLoginModal();
+        }
+      });
+
+      // Handle click outside modal to close
+      document
+        .getElementById("article-modal")
+        .addEventListener("click", function (event) {
+          if (event.target === this) {
+            closeArticleModal();
+          }
+        });
+
+      document
+        .getElementById("login-modal")
+        .addEventListener("click", function (event) {
+          if (event.target === this) {
+            closeLoginModal();
+          }
+        });
+
+      // Handle search on Enter key
+      document
+        .getElementById("search-input")
+        .addEventListener("keypress", function (event) {
+          if (event.key === "Enter") {
+            searchArticles();
+          }
+        });
+
+      // Re-initialize Lucide icons after dynamic content
+      setTimeout(() => {
+        lucide.createIcons();
+      }, 100);
+    </script>
+    <script>
+      (function () {
+        function c() {
+          var b = a.contentDocument || a.contentWindow.document;
+          if (b) {
+            var d = b.createElement("script");
+            d.innerHTML =
+              "window.__CF$cv$params={r:'975b780856b1514a',t:'MTc1NjI5NjY1OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+            b.getElementsByTagName("head")[0].appendChild(d);
+          }
+        }
+        if (document.body) {
+          var a = document.createElement("iframe");
+          a.height = 1;
+          a.width = 1;
+          a.style.position = "absolute";
+          a.style.top = 0;
+          a.style.left = 0;
+          a.style.border = "none";
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          if ("loading" !== document.readyState) c();
+          else if (window.addEventListener)
+            document.addEventListener("DOMContentLoaded", c);
+          else {
+            var e = document.onreadystatechange || function () {};
+            document.onreadystatechange = function (b) {
+              e(b);
+              "loading" !== document.readyState &&
+                ((document.onreadystatechange = e), c());
+            };
+          }
+        }
+      })();
+    </script>
+  </body>
+</html>
