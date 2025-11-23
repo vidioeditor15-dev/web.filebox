@@ -2,7 +2,10 @@
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <title>PNG Gallery Pro - Professional Asset Platform</title>
     <script src="/_sdk/element_sdk.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -120,6 +123,248 @@
         background-size: 20px 20px;
         background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
         background-color: #ffffff;
+      }
+
+      /* Image Optimization */
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+
+      .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      /* Loading states for better mobile experience */
+      .loading-skeleton {
+        background: linear-gradient(
+          90deg,
+          #f0f0f0 25%,
+          #e0e0e0 50%,
+          #f0f0f0 75%
+        );
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+      }
+
+      @keyframes loading {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        /* Navigation */
+        header .flex.items-center.justify-between {
+          flex-direction: column;
+          gap: 16px;
+        }
+
+        .flex.items-center.space-x-6 {
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 12px;
+        }
+
+        /* Hero Section */
+        .text-5xl.md\\:text-6xl {
+          font-size: 2.5rem !important;
+        }
+
+        .flex.flex-col.sm\\:flex-row {
+          flex-direction: column;
+          width: 100%;
+        }
+
+        .flex.flex-col.sm\\:flex-row .bg-white {
+          width: 100%;
+          margin-bottom: 12px;
+        }
+
+        /* Search Bar */
+        .bg-white.rounded-full.shadow-2xl.p-2.flex.items-center {
+          flex-direction: column;
+          border-radius: 16px !important;
+          padding: 16px !important;
+        }
+
+        .bg-white.rounded-full.shadow-2xl.p-2.flex.items-center input {
+          width: 100%;
+          margin: 8px 0;
+        }
+
+        /* Stats Section */
+        .grid.grid-cols-2.md\\:grid-cols-4 {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 16px;
+        }
+
+        .stat-card {
+          padding: 16px !important;
+        }
+
+        .stat-number {
+          font-size: 2rem !important;
+        }
+
+        /* Featured Collections */
+        .grid.grid-cols-1.md\\:grid-cols-3 {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+
+        /* Asset Types */
+        .grid.grid-cols-2.md\\:grid-cols-3.lg\\:grid-cols-6 {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 12px;
+        }
+
+        /* Features Grid */
+        .grid.grid-cols-1.md\\:grid-cols-3 {
+          grid-template-columns: 1fr;
+        }
+
+        /* Explore Section */
+        .max-w-7xl.mx-auto .flex.gap-4.items-center {
+          flex-direction: column;
+        }
+
+        .flex.gap-4.items-center .flex-1 {
+          width: 100%;
+        }
+
+        /* Gallery Grid */
+        #explore-gallery.grid-cols-2.md\\:grid-cols-3.lg\\:grid-cols-4 {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 12px;
+        }
+
+        /* Pricing Cards */
+        .grid.grid-cols-1.md\\:grid-cols-3 {
+          grid-template-columns: 1fr;
+        }
+
+        /* Modal Content */
+        .modal-content {
+          margin: 20px;
+          max-height: calc(100vh - 40px);
+        }
+
+        /* Footer */
+        .grid.grid-cols-1.md\\:grid-cols-5 {
+          grid-template-columns: 1fr;
+          gap: 24px;
+        }
+
+        .md\\:col-span-2 {
+          grid-column: 1;
+        }
+      }
+
+      @media (max-width: 480px) {
+        /* Mobile Small Screens */
+        .grid.grid-cols-2.md\\:grid-cols-4 {
+          grid-template-columns: 1fr;
+        }
+
+        #explore-gallery.grid-cols-2.md\\:grid-cols-3.lg\\:grid-cols-4 {
+          grid-template-columns: 1fr;
+        }
+
+        .grid.grid-cols-2.md\\:grid-cols-3.lg\\:grid-cols-6 {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .text-5xl.md\\:text-6xl {
+          font-size: 2rem !important;
+        }
+
+        /* Navigation items */
+        .flex.items-center.space-x-6 {
+          gap: 8px;
+        }
+
+        .flex.items-center.space-x-6 button {
+          padding: 8px 12px;
+          font-size: 14px;
+        }
+
+        /* Filter Pills */
+        .flex.flex-wrap.gap-3 {
+          gap: 8px;
+        }
+
+        .filter-pill {
+          padding: 6px 12px;
+          font-size: 12px;
+        }
+      }
+
+      /* Tablet Styles */
+      @media (min-width: 769px) and (max-width: 1024px) {
+        .grid.grid-cols-2.md\\:grid-cols-3.lg\\:grid-cols-6 {
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        #explore-gallery.grid-cols-2.md\\:grid-cols-3.lg\\:grid-cols-4 {
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        .grid.grid-cols-1.md\\:grid-cols-3 {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      /* Touch Device Improvements */
+      @media (hover: none) and (pointer: coarse) {
+        .gallery-item .image-overlay {
+          opacity: 1 !important;
+          background: rgba(0, 0, 0, 0.5);
+        }
+
+        .action-btn {
+          padding: 12px 16px;
+          font-size: 16px;
+        }
+
+        /* Increase tap target sizes */
+        button,
+        .nav-link,
+        .filter-pill,
+        .gallery-item {
+          min-height: 44px;
+          min-width: 44px;
+        }
+
+        .trending-tag,
+        .subcategory-pill {
+          padding: 12px 16px;
+          min-height: 44px;
+        }
+      }
+
+      /* Landscape Mobile */
+      @media (max-height: 500px) and (orientation: landscape) {
+        .hero-section {
+          padding: 40px 0 !important;
+        }
+
+        .section {
+          padding: 40px 0 !important;
+        }
+      }
+
+      /* High DPI Screens */
+      @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+        .gradient-bg {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
       }
 
       .image-overlay {
@@ -6853,6 +7098,60 @@
         });
       // Panggil fungsi inisialisasi di bagian akhir script
       initializeAdvancedFilters();
+
+      // Responsive functionality
+      function handleResponsiveLayout() {
+        const width = window.innerWidth;
+
+        if (width < 768) {
+          // Mobile layout adjustments
+          document.body.classList.add("mobile-view");
+          document.body.classList.remove("tablet-view", "desktop-view");
+
+          // Adjust grid view for mobile
+          if (currentGridView === "list") {
+            toggleGridView(); // Switch to grid view on mobile
+          }
+        } else if (width < 1024) {
+          // Tablet layout
+          document.body.classList.add("tablet-view");
+          document.body.classList.remove("mobile-view", "desktop-view");
+        } else {
+          // Desktop layout
+          document.body.classList.add("desktop-view");
+          document.body.classList.remove("mobile-view", "tablet-view");
+        }
+      }
+
+      // Initialize responsive layout
+      handleResponsiveLayout();
+
+      // Update on resize
+      let resizeTimeout;
+      window.addEventListener("resize", function () {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(handleResponsiveLayout, 250);
+      });
+
+      // Touch event improvements for mobile
+      document.addEventListener("touchstart", function () {}, {
+        passive: true,
+      });
+
+      // Prevent zoom on double tap (optional)
+      let lastTouchEnd = 0;
+      document.addEventListener(
+        "touchend",
+        function (event) {
+          const now = new Date().getTime();
+          if (now - lastTouchEnd <= 300) {
+            event.preventDefault();
+          }
+          lastTouchEnd = now;
+        },
+        false
+      );
+
       // Initialize
       if (window.elementSdk) {
         window.elementSdk.init({
@@ -6925,6 +7224,11 @@
           }
         }
       })();
+      function debugResponsive() {
+        console.log("Window size:", window.innerWidth, "x", window.innerHeight);
+        console.log("Device pixel ratio:", window.devicePixelRatio);
+        console.log("Touch device:", "ontouchstart" in window);
+      }
     </script>
   </body>
 </html>
