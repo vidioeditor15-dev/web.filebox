@@ -17,7 +17,30 @@
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
           Oxygen, Ubuntu, Cantarell, sans-serif;
       }
+      /* Pastikan tidak ada duplikasi */
+      @media (max-width: 768px) {
+        /* Sembunyikan desktop nav di mobile */
+        .hidden.md\\:flex {
+          display: none !important;
+        }
 
+        /* Tampilkan mobile nav */
+        .md\\:hidden {
+          display: flex !important;
+        }
+      }
+
+      @media (min-width: 769px) {
+        /* Tampilkan desktop nav di desktop */
+        .hidden.md\\:flex {
+          display: flex !important;
+        }
+
+        /* Sembunyikan mobile nav di desktop */
+        .md\\:hidden {
+          display: none !important;
+        }
+      }
       html,
       body {
         height: 100%;
@@ -303,6 +326,164 @@
         .filter-pill {
           padding: 6px 12px;
           font-size: 12px;
+        }
+      }
+      /* Mobile Navigation Styles */
+      @media (max-width: 768px) {
+        /* Navigation Restructuring */
+        header .flex.items-center.justify-between {
+          flex-direction: column;
+          gap: 12px;
+          padding: 8px 0;
+        }
+        /* Ensure desktop navigation is always visible on desktop */
+        @media (min-width: 768px) {
+          .md\\:flex {
+            display: flex !important;
+          }
+
+          .md\\:hidden {
+            display: none !important;
+          }
+        }
+
+        /* Desktop Navigation Styles */
+        header .flex.items-center.space-x-6 {
+          display: flex;
+          align-items: center;
+          gap: 1.5rem;
+        }
+
+        .nav-link {
+          padding: 0.5rem 0;
+          position: relative;
+          transition: color 0.2s ease;
+          white-space: nowrap;
+        }
+
+        .nav-link:hover {
+          color: #111827;
+        }
+
+        .nav-link::after {
+          content: "";
+          position: absolute;
+          bottom: -2px;
+          left: 0;
+          width: 0;
+          height: 2px;
+          background: #667eea;
+          transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+          width: 100%;
+        }
+
+        /* Mobile navigation hidden on desktop */
+        @media (min-width: 768px) {
+          .nav-links-row {
+            display: none !important;
+          }
+
+          .auth-buttons {
+            display: none !important;
+          }
+        }
+
+        /* Logo and Auth Buttons Row */
+        .logo-auth-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          width: 100%;
+          padding: 0 16px;
+        }
+
+        /* Navigation Links Row */
+        .nav-links-row {
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+          overflow-x: auto;
+          padding: 8px 16px;
+          gap: 8px;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+        }
+
+        .nav-links-row::-webkit-scrollbar {
+          display: none;
+        }
+
+        /* Navigation Links Styling */
+        .nav-link {
+          white-space: nowrap;
+          padding: 8px 12px;
+          font-size: 14px;
+          border-radius: 8px;
+          transition: all 0.2s ease;
+          min-width: fit-content;
+        }
+
+        .nav-link:hover {
+          background-color: rgba(102, 126, 234, 0.1);
+        }
+
+        /* Auth Buttons Styling */
+        .auth-buttons {
+          display: flex;
+          gap: 8px;
+          align-items: center;
+        }
+
+        #login-btn {
+          padding: 8px 16px;
+          font-size: 14px;
+        }
+
+        #signup-btn {
+          padding: 8px 16px;
+          font-size: 14px;
+          white-space: nowrap;
+        }
+
+        /* Download Badge Adjustment */
+        #download-count-badge {
+          position: static;
+          margin-left: 4px;
+          transform: none;
+        }
+      }
+
+      /* Small Mobile Optimization */
+      @media (max-width: 480px) {
+        .nav-links-row {
+          gap: 4px;
+          padding: 8px 12px;
+        }
+
+        .nav-link {
+          padding: 6px 10px;
+          font-size: 13px;
+        }
+
+        .auth-buttons {
+          gap: 6px;
+        }
+
+        #login-btn,
+        #signup-btn {
+          padding: 6px 12px;
+          font-size: 13px;
+        }
+      }
+
+      /* Tablet Adjustment */
+      @media (min-width: 769px) and (max-width: 1024px) {
+        .nav-links-row {
+          justify-content: center;
+          gap: 16px;
         }
       }
 
@@ -602,7 +783,8 @@
                 </p>
               </div>
             </div>
-            <div class="flex items-center space-x-6">
+
+            <div class="hidden md:flex items-center space-x-6">
               <button
                 class="nav-link text-gray-700 hover:text-gray-900 font-medium"
                 data-tab="home"
@@ -651,9 +833,290 @@
                 Daftar
               </button>
             </div>
+            <!-- Tambahkan di dalam <header> setelah tombol signup -->
+            <div
+              id="user-profile-panel"
+              class="hidden md:flex items-center space-x-4"
+            >
+              <!-- User Avatar & Dropdown -->
+              <div class="relative group">
+                <button
+                  id="user-menu-btn"
+                  class="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 rounded-full p-2 transition"
+                >
+                  <div
+                    id="user-avatar"
+                    class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white font-semibold"
+                  >
+                    U
+                  </div>
+                  <span
+                    id="user-name"
+                    class="font-medium text-gray-700 max-w-32 truncate"
+                  ></span>
+                  <svg
+                    class="w-4 h-4 text-gray-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+
+                <!-- Dropdown Menu -->
+                <div
+                  id="user-dropdown"
+                  class="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 z-50 hidden group-hover:block hover:block"
+                >
+                  <div class="px-4 py-3 border-b border-gray-100">
+                    <div class="flex items-center space-x-3">
+                      <div
+                        id="dropdown-avatar"
+                        class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-lg"
+                      >
+                        U
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p
+                          id="dropdown-name"
+                          class="font-semibold text-gray-900 truncate"
+                        ></p>
+                        <p
+                          id="dropdown-email"
+                          class="text-sm text-gray-500 truncate"
+                        ></p>
+                        <p
+                          id="user-plan"
+                          class="text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded-full mt-1 inline-block"
+                        >
+                          Free Plan
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="py-2">
+                    <a
+                      href="#"
+                      onclick="switchTab('profile')"
+                      class="flex items-center px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-600"
+                    >
+                      <svg
+                        class="w-5 h-5 mr-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
+                      </svg>
+                      Profil Saya
+                    </a>
+
+                    <a
+                      href="#"
+                      onclick="switchTab('downloads')"
+                      class="flex items-center px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-600"
+                    >
+                      <svg
+                        class="w-5 h-5 mr-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                        />
+                      </svg>
+                      Riwayat Download
+                    </a>
+
+                    <a
+                      href="#"
+                      onclick="switchTab('favorites')"
+                      class="flex items-center px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-600"
+                    >
+                      <svg
+                        class="w-5 h-5 mr-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                        />
+                      </svg>
+                      Favorit Saya
+                    </a>
+
+                    <a
+                      href="#"
+                      onclick="openUploadAssetModal()"
+                      class="flex items-center px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-600"
+                    >
+                      <svg
+                        class="w-5 h-5 mr-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M12 4v16m8-8H4"
+                        />
+                      </svg>
+                      Upload Aset
+                    </a>
+                  </div>
+
+                  <div class="border-t border-gray-100 pt-2">
+                    <a
+                      href="#"
+                      onclick="switchTab('settings')"
+                      class="flex items-center px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-600"
+                    >
+                      <svg
+                        class="w-5 h-5 mr-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                        />
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                      </svg>
+                      Pengaturan
+                    </a>
+
+                    <button
+                      onclick="logout()"
+                      class="flex items-center w-full px-4 py-2 text-red-600 hover:bg-red-50"
+                    >
+                      <svg
+                        class="w-5 h-5 mr-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                        />
+                      </svg>
+                      Keluar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mobile Profile Menu -->
+            <div id="mobile-user-profile" class="md:hidden hidden">
+              <div class="nav-links-row">
+                <button class="nav-link" onclick="switchTab('profile')">
+                  Profil
+                </button>
+                <button class="nav-link" onclick="switchTab('downloads')">
+                  Download
+                </button>
+                <button class="nav-link" onclick="switchTab('favorites')">
+                  Favorit
+                </button>
+                <button class="nav-link" onclick="switchTab('settings')">
+                  Pengaturan
+                </button>
+                <button class="nav-link text-red-600" onclick="logout()">
+                  Keluar
+                </button>
+              </div>
+            </div>
+            <!-- Mobile Navigation Structure -->
+            <div class="md:hidden flex items-center space-x-4 auth-buttons">
+              <button
+                id="mobile-login-btn"
+                class="text-gray-700 hover:text-gray-900 font-medium text-sm"
+              >
+                Masuk
+              </button>
+              <button
+                id="mobile-signup-btn"
+                class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium text-sm"
+              >
+                Daftar
+              </button>
+            </div>
+          </div>
+
+          <!-- Mobile Navigation Links Row -->
+          <div class="md:hidden nav-links-row">
+            <button
+              class="nav-link text-gray-700 hover:text-gray-900 font-medium"
+              data-tab="home"
+            >
+              Beranda
+            </button>
+            <button
+              class="nav-link text-gray-700 hover:text-gray-900 font-medium"
+              data-tab="explore"
+            >
+              Jelajahi
+            </button>
+            <button
+              class="nav-link text-gray-700 hover:text-gray-900 font-medium"
+              data-tab="pricing"
+            >
+              Harga
+            </button>
+            <button
+              class="nav-link text-gray-700 hover:text-gray-900 font-medium"
+              data-tab="creators"
+            >
+              Kreator
+            </button>
+            <button
+              class="nav-link text-gray-700 hover:text-gray-900 font-medium relative flex items-center"
+              data-tab="downloads"
+            >
+              Unduhan
+              <span
+                id="mobile-download-count-badge"
+                class="hidden ml-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
+                >0</span
+              >
+            </button>
           </div>
         </nav>
       </header>
+
       <!-- Main Content -->
       <main id="main-content">
         <!-- HOME TAB -->
@@ -1775,6 +2238,381 @@
               >
                 Jadi Kreator
               </button>
+            </div>
+            <!-- Tambahkan setelah tab CREATORS -->
+            <!-- PROFILE TAB -->
+            <div id="profile-tab" class="tab-content hidden">
+              <section class="gradient-bg text-white py-16 px-4">
+                <div class="max-w-4xl mx-auto text-center">
+                  <h2 class="text-4xl font-bold mb-4">👤 Profil Saya</h2>
+                  <p class="text-xl text-purple-100">
+                    Kelola informasi akun dan aktivitas Anda
+                  </p>
+                </div>
+              </section>
+
+              <section class="py-8 px-4 bg-gray-50">
+                <div class="max-w-4xl mx-auto">
+                  <!-- Profile Card -->
+                  <div class="bg-white rounded-xl shadow-md mb-6">
+                    <div class="p-6 border-b border-gray-200">
+                      <div class="flex items-center space-x-6">
+                        <div class="relative">
+                          <div
+                            id="profile-avatar"
+                            class="w-20 h-20 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold text-2xl"
+                          >
+                            U
+                          </div>
+                          <button
+                            onclick="changeAvatar()"
+                            class="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-lg border border-gray-200 hover:bg-gray-50"
+                          >
+                            <svg
+                              class="w-4 h-4 text-gray-600"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                              />
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                        <div class="flex-1">
+                          <h1
+                            id="profile-name"
+                            class="text-2xl font-bold text-gray-900"
+                          ></h1>
+                          <p id="profile-email" class="text-gray-600 mb-2"></p>
+                          <div class="flex flex-wrap gap-2">
+                            <span
+                              id="profile-plan"
+                              class="badge bg-purple-100 text-purple-600"
+                              >Free Plan</span
+                            >
+                            <span
+                              id="member-since"
+                              class="badge bg-gray-100 text-gray-600"
+                              >Member sejak</span
+                            >
+                          </div>
+                        </div>
+                        <button
+                          onclick="switchTab('settings')"
+                          class="px-4 py-2 border-2 border-purple-600 text-purple-600 rounded-lg font-semibold hover:bg-purple-50"
+                        >
+                          Edit Profil
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="p-6">
+                      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div class="text-center">
+                          <div
+                            class="text-2xl font-bold text-gray-900"
+                            id="stats-downloads"
+                          >
+                            0
+                          </div>
+                          <div class="text-sm text-gray-600">
+                            Total Download
+                          </div>
+                        </div>
+                        <div class="text-center">
+                          <div
+                            class="text-2xl font-bold text-gray-900"
+                            id="stats-favorites"
+                          >
+                            0
+                          </div>
+                          <div class="text-sm text-gray-600">Favorit</div>
+                        </div>
+                        <div class="text-center">
+                          <div
+                            class="text-2xl font-bold text-gray-900"
+                            id="stats-uploads"
+                          >
+                            0
+                          </div>
+                          <div class="text-sm text-gray-600">Upload</div>
+                        </div>
+                        <div class="text-center">
+                          <div
+                            class="text-2xl font-bold text-gray-900"
+                            id="stats-likes"
+                          >
+                            0
+                          </div>
+                          <div class="text-sm text-gray-600">Likes</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Recent Activity -->
+                  <div class="bg-white rounded-xl shadow-md p-6">
+                    <h3 class="text-xl font-bold mb-4">Aktivitas Terbaru</h3>
+                    <div id="recent-activity" class="space-y-3">
+                      <!-- Activity items will be generated here -->
+                    </div>
+                    <div id="no-activity" class="text-center py-8 hidden">
+                      <div class="text-6xl mb-4">📝</div>
+                      <h4 class="text-lg font-semibold text-gray-900 mb-2">
+                        Belum Ada Aktivitas
+                      </h4>
+                      <p class="text-gray-600">
+                        Mulai jelajahi dan download aset favorit Anda
+                      </p>
+                      <button
+                        onclick="switchTab('explore')"
+                        class="mt-4 px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+                      >
+                        Jelajahi Aset
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <!-- FAVORITES TAB -->
+            <div id="favorites-tab" class="tab-content hidden">
+              <section class="gradient-bg text-white py-16 px-4">
+                <div class="max-w-4xl mx-auto text-center">
+                  <h2 class="text-4xl font-bold mb-4">❤️ Favorit Saya</h2>
+                  <p class="text-xl text-purple-100">
+                    Kumpulan aset yang Anda sukai
+                  </p>
+                </div>
+              </section>
+
+              <section class="py-8 px-4 bg-gray-50">
+                <div class="max-w-7xl mx-auto">
+                  <div class="bg-white rounded-xl p-6 shadow-md mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                      <div>
+                        <h3 class="text-2xl font-bold">Koleksi Favorit</h3>
+                        <p class="text-gray-600" id="favorites-count">
+                          Anda memiliki 0 aset favorit
+                        </p>
+                      </div>
+                      <button
+                        onclick="clearAllFavorites()"
+                        class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 flex items-center gap-2"
+                      >
+                        <svg
+                          class="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                          />
+                        </svg>
+                        Hapus Semua
+                      </button>
+                    </div>
+                  </div>
+
+                  <div
+                    id="favorites-grid"
+                    class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+                  >
+                    <!-- Favorites will be generated here -->
+                  </div>
+
+                  <div id="favorites-empty" class="hidden text-center py-20">
+                    <div class="text-6xl mb-4">❤️</div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">
+                      Belum Ada Favorit
+                    </h3>
+                    <p class="text-gray-600 mb-6">
+                      Tambahkan aset ke favorit dengan mengklik tombol hati
+                    </p>
+                    <button
+                      onclick="switchTab('explore')"
+                      class="px-6 py-3 bg-purple-600 text-white rounded-lg font-bold hover:bg-purple-700"
+                    >
+                      Jelajahi Aset
+                    </button>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <!-- SETTINGS TAB -->
+            <div id="settings-tab" class="tab-content hidden">
+              <section class="gradient-bg text-white py-16 px-4">
+                <div class="max-w-4xl mx-auto text-center">
+                  <h2 class="text-4xl font-bold mb-4">⚙️ Pengaturan</h2>
+                  <p class="text-xl text-purple-100">
+                    Kelola preferensi dan pengaturan akun Anda
+                  </p>
+                </div>
+              </section>
+
+              <section class="py-8 px-4 bg-gray-50">
+                <div class="max-w-4xl mx-auto">
+                  <div class="bg-white rounded-xl shadow-md">
+                    <!-- Account Settings -->
+                    <div class="p-6 border-b border-gray-200">
+                      <h3 class="text-xl font-bold mb-4">Informasi Akun</h3>
+                      <form id="profile-form" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label
+                              class="block text-sm font-medium text-gray-700 mb-2"
+                              >Nama Lengkap</label
+                            >
+                            <input
+                              type="text"
+                              id="settings-name"
+                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600"
+                              required
+                            />
+                          </div>
+                          <div>
+                            <label
+                              class="block text-sm font-medium text-gray-700 mb-2"
+                              >Email</label
+                            >
+                            <input
+                              type="email"
+                              id="settings-email"
+                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600"
+                              required
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label
+                            class="block text-sm font-medium text-gray-700 mb-2"
+                            >Bio</label
+                          >
+                          <textarea
+                            id="settings-bio"
+                            rows="3"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600"
+                            placeholder="Ceritakan sedikit tentang diri Anda..."
+                          ></textarea>
+                        </div>
+
+                        <div class="flex gap-4">
+                          <button
+                            type="button"
+                            onclick="switchTab('profile')"
+                            class="flex-1 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-bold hover:bg-gray-50"
+                          >
+                            Batal
+                          </button>
+                          <button
+                            type="submit"
+                            class="flex-1 py-3 bg-purple-600 text-white rounded-lg font-bold hover:bg-purple-700"
+                          >
+                            Simpan Perubahan
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+
+                    <!-- Subscription -->
+                    <div class="p-6 border-b border-gray-200">
+                      <h3 class="text-xl font-bold mb-4">Langganan</h3>
+                      <div class="flex items-center justify-between">
+                        <div>
+                          <div class="font-semibold" id="current-plan">
+                            Free Plan
+                          </div>
+                          <div class="text-sm text-gray-600" id="plan-features">
+                            10 download/bulan • Resolusi standar
+                          </div>
+                        </div>
+                        <button
+                          onclick="switchTab('pricing')"
+                          class="px-6 py-2 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700"
+                        >
+                          Upgrade
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Preferences -->
+                    <div class="p-6 border-b border-gray-200">
+                      <h3 class="text-xl font-bold mb-4">Preferensi</h3>
+                      <div class="space-y-4">
+                        <label
+                          class="flex items-center justify-between cursor-pointer"
+                        >
+                          <div>
+                            <div class="font-medium">Notifikasi Email</div>
+                            <div class="text-sm text-gray-600">
+                              Kirim notifikasi tentang aset baru dan promosi
+                            </div>
+                          </div>
+                          <input
+                            type="checkbox"
+                            id="email-notifications"
+                            class="w-5 h-5 text-purple-600"
+                            checked
+                          />
+                        </label>
+
+                        <label
+                          class="flex items-center justify-between cursor-pointer"
+                        >
+                          <div>
+                            <div class="font-medium">Mode Gelap</div>
+                            <div class="text-sm text-gray-600">
+                              Tampilkan antarmuka dalam mode gelap
+                            </div>
+                          </div>
+                          <input
+                            type="checkbox"
+                            id="dark-mode"
+                            class="w-5 h-5 text-purple-600"
+                          />
+                        </label>
+                      </div>
+                    </div>
+
+                    <!-- Danger Zone -->
+                    <div class="p-6">
+                      <h3 class="text-xl font-bold mb-4 text-red-600">
+                        Zona Berbahaya
+                      </h3>
+                      <div class="space-y-3">
+                        <button
+                          onclick="deleteAccount()"
+                          class="w-full px-4 py-3 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 text-left"
+                        >
+                          Hapus Akun Permanent
+                          <div class="text-sm font-normal opacity-90">
+                            Semua data akan dihapus dan tidak dapat dikembalikan
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
             </div>
           </section>
           <section class="section bg-white">
@@ -6201,6 +7039,70 @@
         document.getElementById("signup-modal").classList.add("hidden");
       }
 
+      // Update mobile navigation functionality
+      function initializeMobileNavigation() {
+        // Update mobile badge
+        function updateMobileBadge() {
+          const badge = document.getElementById("mobile-download-count-badge");
+          const desktopBadge = document.getElementById("download-count-badge");
+          if (badge && desktopBadge) {
+            badge.textContent = desktopBadge.textContent;
+            if (desktopBadge.classList.contains("hidden")) {
+              badge.classList.add("hidden");
+            } else {
+              badge.classList.remove("hidden");
+            }
+          }
+        }
+
+        // Mobile navigation click handlers
+        document
+          .querySelectorAll(".nav-links-row .nav-link")
+          .forEach((link) => {
+            link.addEventListener("click", (e) => {
+              const tab = e.target.dataset.tab;
+              switchTab(tab);
+            });
+          });
+
+        // Mobile auth buttons
+        document
+          .getElementById("mobile-login-btn")
+          .addEventListener("click", showLoginModal);
+        document
+          .getElementById("mobile-signup-btn")
+          .addEventListener("click", showSignupModal);
+
+        // Initial badge update
+        updateMobileBadge();
+      }
+
+      // Panggil fungsi inisialisasi
+      initializeMobileNavigation();
+
+      // Update badge secara real-time
+      function updateDownloadBadge() {
+        const count = downloadHistory.length;
+        const desktopBadge = document.getElementById("download-count-badge");
+        const mobileBadge = document.getElementById(
+          "mobile-download-count-badge"
+        );
+
+        if (count > 0) {
+          desktopBadge.textContent = count;
+          desktopBadge.classList.remove("hidden");
+          if (mobileBadge) {
+            mobileBadge.textContent = count;
+            mobileBadge.classList.remove("hidden");
+          }
+        } else {
+          desktopBadge.classList.add("hidden");
+          if (mobileBadge) {
+            mobileBadge.classList.add("hidden");
+          }
+        }
+      }
+
       // Event Listeners
       document.querySelectorAll(".nav-link").forEach((link) => {
         link.addEventListener("click", (e) => {
@@ -6208,6 +7110,7 @@
           switchTab(tab);
         });
       });
+
       // Tambahkan event listeners untuk advanced filters
       function initializeAdvancedFilters() {
         // Orientation buttons
