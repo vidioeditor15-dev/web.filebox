@@ -3,7 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="google-site-verification" content="0tjsnnkhmohy7m3X1OI_2_Ze4FUMU2TWLoEmO9NK8vs" />
+    <meta
+      name="google-site-verification"
+      content="0tjsnnkhmohy7m3X1OI_2_Ze4FUMU2TWLoEmO9NK8vs"
+    />
     <title>PngGalleryPro - Free PNG Images, Photos & Vectors</title>
     <link
       rel="stylesheet"
@@ -345,6 +348,108 @@
       .dark-mode .social-btn:hover {
         background: var(--light-bg);
         border-color: var(--primary-color);
+      }
+      /* Image Preview Modal Styles */
+      .category-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        background: var(--primary-color);
+        color: white;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
+
+      .related-images .image-card {
+        margin-bottom: 0;
+      }
+
+      .related-images .image-wrapper {
+        padding-top: 100%;
+      }
+
+      .related-images .image-info {
+        padding: 0.75rem;
+      }
+
+      .related-images .image-title {
+        font-size: 0.9rem;
+      }
+
+      .preview-container {
+        animation: fadeInUp 0.3s ease;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Zoom functionality */
+      .zoom-controls {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        display: flex;
+        gap: 0.5rem;
+        z-index: 10;
+      }
+
+      .zoom-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        transition: var(--transition);
+      }
+
+      .zoom-btn:hover {
+        background: white;
+        transform: scale(1.1);
+      }
+
+      /* Image navigation */
+      .image-navigation {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-between;
+        padding: 0 1rem;
+        transform: translateY(-50%);
+        z-index: 10;
+      }
+
+      .nav-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        transition: var(--transition);
+      }
+
+      .nav-btn:hover {
+        background: white;
+        transform: scale(1.1);
       }
       .user-menu {
         position: relative;
@@ -2212,6 +2317,14 @@
           <i class="fas fa-palette"></i>
           Backgrounds
         </div>
+        <div
+          class="category-tab"
+          data-category="uploaded"
+          onclick="filterByCategory('uploaded')"
+        >
+          <i class="fas fa-cloud-upload-alt"></i>
+          Uploaded
+        </div>
       </div>
     </nav>
 
@@ -2568,6 +2681,7 @@ I'm a passionate photographer and designer with over 10 years of experience.</te
                             <button class="overlay-btn">
                               <i class="fas fa-edit"></i> Edit
                             </button>
+
                             <button class="overlay-btn download">
                               <i class="fas fa-download"></i> Download
                             </button>
@@ -3855,7 +3969,243 @@ I'm a passionate photographer and designer with over 10 years of experience.</te
         </div>
       </div>
     </div>
+    <!-- Image Preview Modal -->
+    <div class="modal" id="imagePreviewModal">
+      <div class="modal-content" style="max-width: 1200px">
+        <div class="modal-header">
+          <h2 class="modal-title" id="previewTitle">Image Preview</h2>
+          <button class="modal-close" onclick="closeImagePreviewModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
 
+        <div class="modal-body">
+          <div
+            class="preview-container"
+            style="display: flex; gap: 2rem; flex-wrap: wrap"
+          >
+            <!-- Image Display Area -->
+            <div
+              class="preview-image-section"
+              style="flex: 1; min-width: 300px"
+            >
+              <div
+                class="image-display"
+                style="
+                  background: var(--light-bg);
+                  border-radius: 12px;
+                  overflow: hidden;
+                  margin-bottom: 1rem;
+                "
+              >
+                <img
+                  id="previewImage"
+                  src=""
+                  alt="Preview"
+                  style="
+                    width: 100%;
+                    height: auto;
+                    max-height: 600px;
+                    object-fit: contain;
+                  "
+                />
+              </div>
+
+              <div
+                class="image-actions"
+                style="display: flex; gap: 1rem; margin-bottom: 1.5rem"
+              >
+                <button
+                  class="overlay-btn download"
+                  id="previewDownloadBtn"
+                  style="flex: 1"
+                >
+                  <i class="fas fa-download"></i> Download
+                </button>
+                <button class="overlay-btn" id="previewLikeBtn" style="flex: 1">
+                  <i class="far fa-heart"></i>
+                  <span id="likeCount">0</span> Likes
+                </button>
+                <button
+                  class="overlay-btn"
+                  onclick="shareImage()"
+                  style="flex: 1"
+                >
+                  <i class="fas fa-share-alt"></i> Share
+                </button>
+              </div>
+            </div>
+
+            <!-- Image Details Section -->
+            <div
+              class="preview-details-section"
+              style="flex: 1; min-width: 300px"
+            >
+              <div
+                class="image-info-card"
+                style="
+                  background: var(--light-bg);
+                  padding: 1.5rem;
+                  border-radius: 12px;
+                  margin-bottom: 1.5rem;
+                "
+              >
+                <h3 style="margin-bottom: 1rem; color: var(--primary-color)">
+                  Image Details
+                </h3>
+
+                <div class="info-grid" style="display: grid; gap: 1rem">
+                  <div class="info-item">
+                    <span
+                      style="color: var(--text-secondary); font-size: 0.9rem"
+                      >Title</span
+                    >
+                    <div style="font-weight: 600" id="detailTitle">-</div>
+                  </div>
+
+                  <div class="info-item">
+                    <span
+                      style="color: var(--text-secondary); font-size: 0.9rem"
+                      >Author</span
+                    >
+                    <div
+                      style="display: flex; align-items: center; gap: 0.5rem"
+                    >
+                      <div class="author-avatar" id="detailAuthorAvatar">
+                        JD
+                      </div>
+                      <span id="detailAuthor">John Doe</span>
+                    </div>
+                  </div>
+
+                  <div class="info-item">
+                    <span
+                      style="color: var(--text-secondary); font-size: 0.9rem"
+                      >Category</span
+                    >
+                    <div>
+                      <span class="category-badge" id="detailCategory"
+                        >Photos</span
+                      >
+                    </div>
+                  </div>
+
+                  <div class="info-item">
+                    <span
+                      style="color: var(--text-secondary); font-size: 0.9rem"
+                      >Dimensions</span
+                    >
+                    <div id="detailDimensions">1920 x 1080 px</div>
+                  </div>
+
+                  <div class="info-item">
+                    <span
+                      style="color: var(--text-secondary); font-size: 0.9rem"
+                      >File Size</span
+                    >
+                    <div id="detailSize">2.5 MB</div>
+                  </div>
+
+                  <div class="info-item">
+                    <span
+                      style="color: var(--text-secondary); font-size: 0.9rem"
+                      >Downloads</span
+                    >
+                    <div id="detailDownloads">1,234</div>
+                  </div>
+
+                  <div class="info-item">
+                    <span
+                      style="color: var(--text-secondary); font-size: 0.9rem"
+                      >Upload Date</span
+                    >
+                    <div id="detailDate">January 15, 2024</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tags Section -->
+              <div class="tags-section" style="margin-bottom: 1.5rem">
+                <h4 style="margin-bottom: 0.5rem; color: var(--text-primary)">
+                  Tags
+                </h4>
+                <div
+                  class="tags-container"
+                  id="previewTags"
+                  style="display: flex; flex-wrap: wrap; gap: 0.5rem"
+                >
+                  <!-- Tags will be dynamically added here -->
+                </div>
+              </div>
+
+              <!-- Description Section -->
+              <div class="description-section">
+                <h4 style="margin-bottom: 0.5rem; color: var(--text-primary)">
+                  Description
+                </h4>
+                <p
+                  id="previewDescription"
+                  style="color: var(--text-secondary); line-height: 1.6"
+                >
+                  This is a beautiful image with detailed description.
+                </p>
+              </div>
+
+              <!-- License Information -->
+              <div
+                class="license-info"
+                style="
+                  margin-top: 1.5rem;
+                  padding-top: 1.5rem;
+                  border-top: 1px solid var(--border-color);
+                "
+              >
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    margin-bottom: 0.5rem;
+                  "
+                >
+                  <i
+                    class="fas fa-certificate"
+                    style="color: var(--primary-color)"
+                  ></i>
+                  <span style="font-size: 0.9rem; color: var(--text-secondary)"
+                    >Free for commercial use with attribution</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Related Images Section -->
+          <div
+            class="related-images"
+            style="
+              margin-top: 2rem;
+              padding-top: 2rem;
+              border-top: 1px solid var(--border-color);
+            "
+          >
+            <h3 style="margin-bottom: 1rem; color: var(--primary-color)">
+              Related Images
+            </h3>
+            <div
+              class="image-grid"
+              id="relatedImagesGrid"
+              style="
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 1rem;
+              "
+            >
+              <!-- Related images will be dynamically added here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- Toast Notification -->
     <div class="toast" id="toast">
       <i class="fas fa-check-circle"></i>
@@ -4029,6 +4379,26 @@ I'm a passionate photographer and designer with over 10 years of experience.</te
 
       // Call this function when DOM is loaded
       document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("DOMContentLoaded", () => {
+          // Load uploaded images dari localStorage
+          uploadedImages =
+            JSON.parse(localStorage.getItem("uploadedImages")) || [];
+
+          loadImages();
+          setupEventListeners();
+          updateUIForUserState();
+          loadDarkModePreference();
+
+          // Auto detect system preference
+          const prefersDarkScheme = window.matchMedia(
+            "(prefers-color-scheme: dark)"
+          );
+          const savedPreference = localStorage.getItem("darkMode");
+
+          if (savedPreference === null && prefersDarkScheme.matches) {
+            toggleDarkMode();
+          }
+        });
         loadImages();
         setupEventListeners();
         updateUIForUserState();
@@ -4062,7 +4432,15 @@ I'm a passionate photographer and designer with over 10 years of experience.</te
               performSearch();
             }
           });
-
+        // Close modal on outside click
+        document.querySelectorAll(".modal").forEach((modal) => {
+          modal.addEventListener("click", (e) => {
+            if (e.target === modal) {
+              modal.classList.remove("active");
+              document.body.style.overflow = "";
+            }
+          });
+        });
         // Close modal on outside click
         document.querySelectorAll(".modal").forEach((modal) => {
           modal.addEventListener("click", (e) => {
@@ -4096,7 +4474,114 @@ I'm a passionate photographer and designer with over 10 years of experience.</te
           mobileAuthText.textContent = "Login / Sign Up";
         }
       }
+      function updateUploadsTab() {
+        const uploadsGrid = document.querySelector("#uploadsTab .image-grid");
+        if (!uploadsGrid) return;
 
+        uploadsGrid.innerHTML = "";
+
+        // Filter hanya uploaded images oleh user saat ini
+        const userUploads = uploadedImages.filter(
+          (img) => img.author === (currentUser?.name || "Guest")
+        );
+
+        if (userUploads.length === 0) {
+          uploadsGrid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-secondary);">
+                <i class="fas fa-cloud-upload-alt" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                <h3>No uploads yet</h3>
+                <p>Upload your first image to see it here!</p>
+                <button class="btn" onclick="openUploadModal()" style="margin-top: 1rem;">
+                    Upload Image
+                </button>
+            </div>
+        `;
+          return;
+        }
+
+        userUploads.forEach((image) => {
+          uploadsGrid.innerHTML += `
+            <div class="image-card">
+                <div class="image-wrapper">
+                    <img src="${image.dataUrl}" alt="${image.title}">
+                    <div class="image-overlay">
+                        <div class="overlay-actions">
+                            // Dalam loop userUploads, tambahkan tombol delete
+<button class="overlay-btn" onclick="event.stopPropagation(); deleteUploadedImage(${
+            image.id
+          })" style="background: var(--secondary-color);">
+    <i class="fas fa-trash"></i> Delete
+</button>
+                            <button class="overlay-btn" onclick="editUploadedImage(${
+                              image.id
+                            })">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="overlay-btn download" onclick="downloadImage(${
+                              image.id
+                            }, '${image.title}.jpg')">
+                                <i class="fas fa-download"></i> ${
+                                  image.downloads > 0
+                                    ? `Download (${image.downloads})`
+                                    : "Download"
+                                }
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="image-info">
+                    <div class="image-title">${image.title}</div>
+                    <div class="image-meta">
+                        <div class="image-author">
+                            <div class="author-avatar">${image.author
+                              .substring(0, 2)
+                              .toUpperCase()}</div>
+                            <span>You</span>
+                        </div>
+                        <div class="image-stats">
+                            <i class="fas fa-download"></i> ${image.downloads}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        });
+      }
+      function editUploadedImage(imageId) {
+        const image = uploadedImages.find((img) => img.id === imageId);
+        if (!image) return;
+
+        const newTitle = prompt("Enter new title for this image:", image.title);
+        if (newTitle && newTitle.trim() !== image.title) {
+          image.title = newTitle.trim();
+          localStorage.setItem(
+            "uploadedImages",
+            JSON.stringify(uploadedImages)
+          );
+          showToast("Image title updated!", "success");
+
+          // Update UI
+          updateUploadsTab();
+          if (currentCategory === "uploaded") {
+            updateImageGrid();
+          }
+        }
+      }
+      function deleteUploadedImage(imageId) {
+        if (confirm("Are you sure you want to delete this image?")) {
+          uploadedImages = uploadedImages.filter((img) => img.id !== imageId);
+          localStorage.setItem(
+            "uploadedImages",
+            JSON.stringify(uploadedImages)
+          );
+          showToast("Image deleted successfully!", "success");
+
+          updateUploadsTab();
+          if (currentCategory === "uploaded") {
+            updateImageGrid();
+          }
+        }
+      }
       // Toggle Mobile Menu
       function toggleMobileMenu() {
         const hamburger = document.getElementById("hamburger");
@@ -4174,7 +4659,17 @@ I'm a passionate photographer and designer with over 10 years of experience.</te
           });
         }, 500);
       }
+      function updateImageGrid() {
+        const grid = document.getElementById("imageGrid");
+        grid.innerHTML = "";
 
+        const filteredData = filterImages();
+        filteredData.forEach((image, index) => {
+          setTimeout(() => {
+            grid.innerHTML += createImageCard(image);
+          }, index * 50);
+        });
+      }
       // Create skeleton loading card
       function createSkeletonCard() {
         return `
@@ -4190,60 +4685,85 @@ I'm a passionate photographer and designer with over 10 years of experience.</te
 
       // Create image card HTML
       function createImageCard(image) {
-        const seed = `image${image.id}`;
+        const isUploaded = image.isUploaded;
+        const seed = isUploaded ? `uploaded${image.id}` : `image${image.id}`;
         const isLiked = likedImages.has(image.id);
         const isDownloaded = downloadedImages.has(image.id);
 
+        // Untuk uploaded images, gunakan dataUrl dari localStorage
+        const imageSrc = isUploaded
+          ? uploadedImages.find((img) => img.id === image.id)?.dataUrl
+          : `https://picsum.photos/seed/${seed}/400/300.jpg`;
+
         return `
-                <div class="image-card" onclick="openImagePreview(${image.id})">
-                    <div class="image-wrapper">
-                        <img src="https://picsum.photos/seed/${seed}/400/300.jpg" alt="${
-          image.title
-        }" loading="lazy">
-                        <div class="image-overlay">
-                            <div class="overlay-actions">
-                                <button class="overlay-btn ${
-                                  isLiked ? "liked" : ""
-                                }" onclick="event.stopPropagation(); likeImage(${
+        <div class="image-card" onclick="openImagePreview(${image.id})">
+            <div class="image-wrapper">
+                <img src="${imageSrc}" alt="${image.title}" loading="lazy">
+                <div class="image-overlay">
+                    <div class="overlay-actions">
+                        <button class="overlay-btn ${
+                          isLiked ? "liked" : ""
+                        }" onclick="event.stopPropagation(); likeImage(${
           image.id
         })">
-                                    <i class="fas fa-heart${
-                                      isLiked ? "" : "-o"
-                                    }"></i> ${image.likes + (isLiked ? 1 : 0)}
-                                </button>
-                                <button class="overlay-btn download ${
-                                  isDownloaded ? "downloaded" : ""
-                                }" onclick="event.stopPropagation(); downloadImage(${
+                            <i class="fas fa-heart${
+                              isLiked ? "" : "-o"
+                            }"></i> ${image.likes + (isLiked ? 1 : 0)}
+                        </button>
+                        <button class="overlay-btn download ${
+                          isDownloaded ? "downloaded" : ""
+                        }" onclick="event.stopPropagation(); downloadImage(${
           image.id
-        })">
-                                    <i class="fas fa-download"></i> ${
-                                      isDownloaded ? "Downloaded" : "Download"
-                                    }
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="image-info">
-                        <div class="image-title">${image.title}</div>
-                        <div class="image-meta">
-                            <div class="image-author">
-                                <div class="author-avatar">${image.author}</div>
-                                <span>${image.author}</span>
-                            </div>
-                            <div class="image-stats">
-                                <i class="fas fa-download"></i> ${formatNumber(
-                                  image.downloads
-                                )}
-                            </div>
-                        </div>
+        }, '${image.title}.jpg')">
+                            <i class="fas fa-download"></i> ${
+                              isDownloaded ? "Downloaded" : "Download"
+                            }
+                        </button>
                     </div>
                 </div>
-            `;
+            </div>
+            <div class="image-info">
+                <div class="image-title">${image.title} ${
+          isUploaded
+            ? '<span style="color: var(--primary-color); font-size: 0.8em;">(Uploaded)</span>'
+            : ""
+        }</div>
+                <div class="image-meta">
+                    <div class="image-author">
+                        <div class="author-avatar">${image.author
+                          .substring(0, 2)
+                          .toUpperCase()}</div>
+                        <span>${image.author}</span>
+                    </div>
+                    <div class="image-stats">
+                        <i class="fas fa-download"></i> ${formatNumber(
+                          image.downloads
+                        )}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
       }
 
       // Filter images based on category and filter
       function filterImages() {
         let filtered = [...imageData];
+
+        // Gabungkan dengan uploadedImages
+        if (uploadedImages.length > 0) {
+          filtered = filtered.concat(
+            uploadedImages.map((img) => ({
+              id: img.id,
+              title: img.title,
+              author: img.author,
+              category: img.category,
+              downloads: img.downloads,
+              likes: 0,
+              isUploaded: true,
+            }))
+          );
+        }
 
         if (currentCategory !== "all") {
           filtered = filtered.filter((img) => img.category === currentCategory);
@@ -4374,23 +4894,66 @@ I'm a passionate photographer and designer with over 10 years of experience.</te
       }
 
       // Download image
-      function downloadImage(imageId) {
+      function downloadImage(imageId, fileName = null) {
         if (!isLoggedIn) {
           showToast("Please login to download images", "error");
           openAuthModal();
           return;
         }
 
-        downloadedImages.add(imageId);
+        // Cek apakah gambar dari uploadedImages
+        const uploadedImage = uploadedImages.find((img) => img.id === imageId);
+
+        if (uploadedImage) {
+          // Download gambar yang diupload user
+          const link = document.createElement("a");
+          link.href = uploadedImage.dataUrl;
+          link.download = fileName || uploadedImage.fileName;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          // Update download count
+          uploadedImage.downloads++;
+          localStorage.setItem(
+            "uploadedImages",
+            JSON.stringify(uploadedImages)
+          );
+
+          // Tambah ke downloadedImages set
+          downloadedImages.add(imageId);
+
+          showToast("Image downloaded successfully!", "success");
+
+          // Update UI jika di profile modal
+          if (
+            document.getElementById("uploadsTab").classList.contains("active")
+          ) {
+            updateUploadsTab();
+          }
+          return;
+        }
+
+        // Untuk gambar default (simulasi)
         const image = imageData.find((img) => img.id === imageId);
         if (image) {
-          image.downloads++;
-          showToast("Download started!", "success");
+          // Untuk gambar default, kita simpan ke localStorage sebagai fallback
+          const seed = `image${imageId}`;
+          const imgUrl = `https://picsum.photos/seed/${seed}/800/600.jpg`;
 
-          setTimeout(() => {
-            showToast("Image downloaded successfully!", "success");
-          }, 1500);
+          // Buat link download
+          const link = document.createElement("a");
+          link.href = imgUrl;
+          link.download = `${image.title}.jpg`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          downloadedImages.add(imageId);
+          image.downloads++;
+          showToast("Image downloaded successfully!", "success");
         }
+
         loadImages();
       }
 
@@ -4413,19 +4976,429 @@ I'm a passionate photographer and designer with over 10 years of experience.</te
 
       // Open image preview
       function openImagePreview(imageId) {
-        showToast("Preview feature coming soon!", "success");
+        // Cari gambar dari data yang ada
+        let image;
+
+        // Cek apakah gambar dari uploadedImages
+        if (uploadedImages.some((img) => img.id === imageId)) {
+          image = uploadedImages.find((img) => img.id === imageId);
+          image.isUploaded = true;
+        } else {
+          // Cari dari imageData default
+          image = imageData.find((img) => img.id === imageId);
+          if (!image) {
+            showToast("Image not found", "error");
+            return;
+          }
+          image.isUploaded = false;
+        }
+
+        // Buka modal preview
+        openImagePreviewModal(image);
       }
 
-      // Profile Modal Functions
-      function openProfileModal() {
-        document.getElementById("profileModal").classList.add("active");
-        openProfileTab("overview");
+      // Open image preview modal dengan data lengkap
+      function openImagePreviewModal(image) {
+        const modal = document.getElementById("imagePreviewModal");
+        const previewImage = document.getElementById("previewImage");
+        const previewTitle = document.getElementById("previewTitle");
+        const detailTitle = document.getElementById("detailTitle");
+        const detailAuthor = document.getElementById("detailAuthor");
+        const detailAuthorAvatar =
+          document.getElementById("detailAuthorAvatar");
+        const detailCategory = document.getElementById("detailCategory");
+        const detailDownloads = document.getElementById("detailDownloads");
+        const detailDate = document.getElementById("detailDate");
+        const previewDownloadBtn =
+          document.getElementById("previewDownloadBtn");
+        const previewLikeBtn = document.getElementById("previewLikeBtn");
+        const likeCount = document.getElementById("likeCount");
+        const previewTags = document.getElementById("previewTags");
+        const previewDescription =
+          document.getElementById("previewDescription");
+
+        // Set image source
+        if (image.isUploaded) {
+          previewImage.src = image.dataUrl;
+        } else {
+          previewImage.src = `https://picsum.photos/seed/image${image.id}/1200/800.jpg`;
+        }
+
+        // Set title
+        const displayTitle = image.title || "Untitled Image";
+        previewTitle.textContent = displayTitle;
+        detailTitle.textContent = displayTitle;
+
+        // Set author info
+        const authorName = image.author || "Anonymous";
+        detailAuthor.textContent = authorName;
+        detailAuthorAvatar.textContent = authorName
+          .substring(0, 2)
+          .toUpperCase();
+        detailAuthorAvatar.style.background = getRandomColor(authorName);
+
+        // Set category
+        const categoryMap = {
+          png: "PNG Images",
+          photos: "Photography",
+          vectors: "Vector Graphics",
+          videos: "Video Clips",
+          ppt: "PowerPoint",
+          mockups: "Mockups",
+          backgrounds: "Backgrounds",
+          uploaded: "Uploaded",
+        };
+        const categoryName = categoryMap[image.category] || image.category;
+        detailCategory.textContent = categoryName;
+
+        // Set stats
+        detailDownloads.textContent = formatNumber(image.downloads || 0);
+        detailDate.textContent = image.uploadDate
+          ? new Date(image.uploadDate).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })
+          : "Unknown";
+
+        // Set image size and dimensions (simulasi)
+        detailSize.textContent = image.size
+          ? formatFileSize(image.size)
+          : "2.5 MB";
+        detailDimensions.textContent = image.isUploaded
+          ? "Original Size"
+          : "1920 × 1080 px";
+
+        // Setup download button
+        previewDownloadBtn.onclick = (e) => {
+          e.stopPropagation();
+          downloadImage(image.id, `${image.title || "image"}.jpg`);
+        };
+
+        // Setup like button
+        const isLiked = likedImages.has(image.id);
+        updateLikeButton(image, isLiked);
+        previewLikeBtn.onclick = (e) => {
+          e.stopPropagation();
+          toggleLikeImage(image);
+        };
+
+        // Generate tags based on image title
+        generateTags(image, previewTags);
+
+        // Set description
+        previewDescription.textContent = generateDescription(image);
+
+        // Show related images
+        showRelatedImages(image);
+
+        // Buka modal
+        modal.classList.add("active");
+        document.body.style.overflow = "hidden";
       }
+
+      // Close image preview modal
+      function closeImagePreviewModal() {
+        const modal = document.getElementById("imagePreviewModal");
+        modal.classList.remove("active");
+        document.body.style.overflow = "";
+      }
+
+      // Generate random color berdasarkan nama author
+      function getRandomColor(str) {
+        const colors = [
+          "#4caf50",
+          "#2196f3",
+          "#ff9800",
+          "#e91e63",
+          "#9c27b0",
+          "#3f51b5",
+          "#00bcd4",
+          "#ff5722",
+        ];
+        const index = str
+          .split("")
+          .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        return colors[index % colors.length];
+      }
+
+      // Format file size
+      function formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + " bytes";
+        else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + " KB";
+        else return (bytes / 1048576).toFixed(1) + " MB";
+      }
+
+      // Update like button state
+      function updateLikeButton(image, isLiked) {
+        const previewLikeBtn = document.getElementById("previewLikeBtn");
+        const likeCount = document.getElementById("likeCount");
+        const icon = previewLikeBtn.querySelector("i");
+
+        if (isLiked) {
+          previewLikeBtn.style.background = "var(--secondary-color)";
+          previewLikeBtn.style.color = "white";
+          icon.className = "fas fa-heart";
+        } else {
+          previewLikeBtn.style.background = "";
+          previewLikeBtn.style.color = "";
+          icon.className = "far fa-heart";
+        }
+
+        likeCount.textContent = formatNumber(
+          (image.likes || 0) + (isLiked ? 1 : 0)
+        );
+      }
+
+      // Toggle like pada gambar di preview
+      function toggleLikeImage(image) {
+        if (!isLoggedIn) {
+          showToast("Please login to like images", "error");
+          closeImagePreviewModal();
+          openAuthModal();
+          return;
+        }
+
+        const isLiked = likedImages.has(image.id);
+
+        if (isLiked) {
+          likedImages.delete(image.id);
+          if (image.likes > 0) image.likes--;
+          showToast("Image unliked", "success");
+        } else {
+          likedImages.add(image.id);
+          image.likes = (image.likes || 0) + 1;
+          showToast("Image liked!", "success");
+        }
+
+        updateLikeButton(image, !isLiked);
+
+        // Update grid jika gambar ada di grid utama
+        if (!image.isUploaded) {
+          updateImageGrid();
+        }
+      }
+
+      // Generate tags berdasarkan judul gambar
+      function generateTags(image, container) {
+        const title = image.title.toLowerCase();
+        const tags = [];
+
+        // Add category tag
+        tags.push(image.category);
+
+        // Add descriptive tags based on common words
+        const commonWords = [
+          "nature",
+          "mountain",
+          "landscape",
+          "city",
+          "skyline",
+          "business",
+          "icon",
+          "abstract",
+          "background",
+          "pattern",
+          "social",
+          "media",
+          "portrait",
+          "photo",
+          "vector",
+          "floral",
+          "design",
+          "template",
+          "mockup",
+          "phone",
+        ];
+
+        commonWords.forEach((word) => {
+          if (title.includes(word) && !tags.includes(word)) {
+            tags.push(word);
+          }
+        });
+
+        // Limit to 5 tags
+        const displayTags = tags.slice(0, 5);
+
+        // Clear container
+        container.innerHTML = "";
+
+        // Add tag elements
+        displayTags.forEach((tag) => {
+          const tagElement = document.createElement("span");
+          tagElement.className = "filter-tag";
+          tagElement.textContent = tag;
+          tagElement.style.cursor = "default";
+          container.appendChild(tagElement);
+        });
+      }
+
+      // Generate description berdasarkan gambar
+      function generateDescription(image) {
+        const category = image.category;
+        const baseDescriptions = {
+          photos:
+            "A high-quality photograph taken by professional photographers. Perfect for websites, presentations, and commercial projects.",
+          png: "PNG image with transparent background. Ideal for graphic design, web design, and digital projects.",
+          vectors:
+            "Scalable vector graphic that maintains quality at any size. Perfect for logos, illustrations, and print materials.",
+          backgrounds:
+            "Beautiful background pattern or texture. Can be used for websites, mobile apps, and graphic design.",
+          mockups:
+            "Professional product mockup template. Showcase your designs in realistic environments.",
+          uploaded:
+            "User-uploaded image. Contributed by our community of creators.",
+        };
+
+        return (
+          baseDescriptions[category] ||
+          "A beautiful image from our collection. Free to use for personal and commercial projects."
+        );
+      }
+
+      // Show related images
+      function showRelatedImages(currentImage) {
+        const container = document.getElementById("relatedImagesGrid");
+        container.innerHTML = "";
+
+        // Find related images (same category, excluding current)
+        const related = [...imageData, ...uploadedImages]
+          .filter((img) => {
+            // Untuk uploadedImages yang berupa objek sederhana
+            const imgId = typeof img === "object" ? img.id : img;
+            return (
+              img.category === currentImage.category &&
+              img.id !== currentImage.id
+            );
+          })
+          .slice(0, 6); // Limit to 6 images
+
+        if (related.length === 0) {
+          container.innerHTML =
+            '<p style="grid-column: 1 / -1; text-align: center; color: var(--text-secondary);">No related images found.</p>';
+          return;
+        }
+
+        // Add related images
+        related.forEach((img) => {
+          const imageData =
+            typeof img === "object" ? img : imageData.find((i) => i.id === img);
+          if (!imageData) return;
+
+          const card = document.createElement("div");
+          card.className = "image-card";
+          card.onclick = () => {
+            closeImagePreviewModal();
+            setTimeout(() => openImagePreview(imageData.id), 300);
+          };
+
+          const imageSrc = imageData.isUploaded
+            ? imageData.dataUrl
+            : `https://picsum.photos/seed/image${imageData.id}/300/300.jpg`;
+
+          card.innerHTML = `
+      <div class="image-wrapper">
+        <img src="${imageSrc}" alt="${imageData.title}" loading="lazy">
+      </div>
+      <div class="image-info">
+        <div class="image-title">${imageData.title}</div>
+        <div class="image-meta">
+          <div class="image-author">
+            <div class="author-avatar">${imageData.author
+              .substring(0, 2)
+              .toUpperCase()}</div>
+            <span>${imageData.author}</span>
+          </div>
+        </div>
+      </div>
+    `;
+
+          container.appendChild(card);
+        });
+      }
+
+      // Share image functionality
+      function shareImage() {
+        const currentTitle = document.getElementById("detailTitle").textContent;
+        const currentUrl = window.location.href;
+
+        if (navigator.share) {
+          navigator
+            .share({
+              title: currentTitle,
+              text: `Check out this image from PngGalleryPro: ${currentTitle}`,
+              url: currentUrl,
+            })
+            .then(() => showToast("Thanks for sharing!", "success"))
+            .catch(() => showToast("Sharing cancelled", "error"));
+        } else {
+          // Fallback: copy URL to clipboard
+          navigator.clipboard
+            .writeText(currentUrl)
+            .then(() => showToast("Link copied to clipboard!", "success"))
+            .catch(() => showToast("Failed to copy link", "error"));
+        }
+      }
+
+      // Add keyboard navigation
+      document.addEventListener("keydown", (e) => {
+        const modal = document.getElementById("imagePreviewModal");
+        if (!modal.classList.contains("active")) return;
+
+        if (e.key === "Escape") {
+          closeImagePreviewModal();
+        }
+
+        // Add arrow key navigation for related images
+        if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+          // Implement navigation between related images
+          // This would require tracking current image index
+        }
+      });
 
       function closeProfileModal() {
         document.getElementById("profileModal").classList.remove("active");
       }
 
+      function openProfileTab(tabName) {
+        // Hide all tabs
+        document.querySelectorAll(".tab-content").forEach((tab) => {
+          tab.classList.remove("active");
+        });
+
+        // Show selected tab
+        document.getElementById(tabName + "Tab").classList.add("active");
+
+        // Update active menu item
+        document.querySelectorAll(".profile-menu-item").forEach((item) => {
+          item.classList.remove("active");
+        });
+
+        // Find and activate the corresponding menu item
+        const menuItems = document.querySelectorAll(".profile-menu-item");
+        menuItems.forEach((item) => {
+          if (
+            item.textContent.toLowerCase().includes(tabName) ||
+            (tabName === "overview" && item.textContent.includes("Overview")) ||
+            (tabName === "uploads" && item.textContent.includes("Uploads")) ||
+            (tabName === "downloads" &&
+              item.textContent.includes("Downloads")) ||
+            (tabName === "collections" &&
+              item.textContent.includes("Collections")) ||
+            (tabName === "activity" && item.textContent.includes("Activity")) ||
+            (tabName === "notifications" &&
+              item.textContent.includes("Notifications")) ||
+            (tabName === "settings" && item.textContent.includes("Settings"))
+          ) {
+            item.classList.add("active");
+          }
+        });
+
+        // Jika membuka uploads tab, update konten
+        if (tabName === "uploads") {
+          setTimeout(updateUploadsTab, 100);
+        }
+      }
       function openProfileTab(tabName) {
         // Hide all tabs
         document.querySelectorAll(".tab-content").forEach((tab) => {
@@ -4663,6 +5636,11 @@ I'm a passionate photographer and designer with over 10 years of experience.</te
         handleFiles(files);
       }
 
+      // Array untuk menyimpan gambar yang diupload
+      let uploadedImages =
+        JSON.parse(localStorage.getItem("uploadedImages")) || [];
+
+      // Fungsi untuk handle files upload yang sesungguhnya
       function handleFiles(files) {
         const preview = document.getElementById("uploadPreview");
         const previewGrid = document.getElementById("previewGrid");
@@ -4672,20 +5650,56 @@ I'm a passionate photographer and designer with over 10 years of experience.</te
 
         Array.from(files).forEach((file, index) => {
           const reader = new FileReader();
+
           reader.onload = (e) => {
+            // Simpan gambar ke localStorage
+            const imageData = {
+              id: Date.now() + index,
+              title: file.name.replace(/\.[^/.]+$/, ""), // Remove extension
+              fileName: file.name,
+              dataUrl: e.target.result,
+              size: file.size,
+              type: file.type,
+              uploadDate: new Date().toISOString(),
+              downloads: 0,
+              author: currentUser ? currentUser.name : "Guest",
+              category: "uploaded",
+            };
+
+            // Tambahkan ke array uploadedImages
+            uploadedImages.push(imageData);
+
+            // Simpan ke localStorage
+            localStorage.setItem(
+              "uploadedImages",
+              JSON.stringify(uploadedImages)
+            );
+
+            // Tampilkan preview
             previewGrid.innerHTML += `
-                        <div style="position: relative;">
-                            <img src="${e.target.result}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 8px;">
-                            <div style="position: absolute; top: 5px; right: 5px; background: var(--primary-color); color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">
-                                ✓
-                            </div>
-                        </div>
-                    `;
+                <div style="position: relative;">
+                    <img src="${e.target.result}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 8px;">
+                    <div style="position: absolute; top: 5px; right: 5px; background: var(--primary-color); color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">
+                        ✓
+                    </div>
+                </div>
+            `;
+
+            // Update grid untuk menampilkan gambar yang baru diupload
+            if (currentCategory === "all" || currentCategory === "uploaded") {
+              updateImageGrid();
+            }
           };
+
           reader.readAsDataURL(file);
         });
 
-        showToast(`${files.length} file(s) selected for upload`, "success");
+        showToast(`${files.length} file(s) uploaded successfully!`, "success");
+
+        // Auto close modal setelah 2 detik
+        setTimeout(() => {
+          closeUploadModal();
+        }, 2000);
       }
 
       function openCollection(collectionName) {
