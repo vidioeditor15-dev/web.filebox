@@ -150,7 +150,19 @@
         background: var(--card-bg);
         box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.1);
       }
+      /* Tambahkan di bagian CSS */
+      select.form-input {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666666'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1em;
+        padding-right: 2.5rem;
+      }
 
+      select.form-input:focus {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234caf50'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+      }
       .search-btn {
         position: absolute;
         right: 5px;
@@ -3194,6 +3206,7 @@ I'm a passionate photographer and designer with over 10 years of experience.</te
         </div>
 
         <div class="modal-body">
+          <!-- Upload Area -->
           <div
             class="upload-area"
             id="uploadArea"
@@ -3222,17 +3235,23 @@ I'm a passionate photographer and designer with over 10 years of experience.</te
             />
           </div>
 
-          <div id="uploadPreview" style="margin-top: 2rem; display: none">
-            <h3>Selected Files</h3>
-            <div
-              id="previewGrid"
-              style="
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-                gap: 1rem;
-                margin-top: 1rem;
-              "
-            ></div>
+          <!-- Form Input untuk Setiap File -->
+          <div id="uploadForms" style="display: none; margin-top: 2rem">
+            <h3 style="margin-bottom: 1rem">Image Details</h3>
+            <div id="formsContainer">
+              <!-- Forms akan ditambahkan secara dinamis -->
+            </div>
+
+            <!-- Tombol Submit -->
+            <div style="margin-top: 2rem; text-align: center">
+              <button
+                class="btn"
+                onclick="processAllUploads()"
+                style="padding: 0.75rem 2rem"
+              >
+                <i class="fas fa-upload"></i> Upload All Images
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -4690,62 +4709,92 @@ I'm a passionate photographer and designer with over 10 years of experience.</te
         const isLiked = likedImages.has(image.id);
         const isDownloaded = downloadedImages.has(image.id);
 
-        // Untuk uploaded images, gunakan dataUrl dari localStorage
         const imageSrc = isUploaded
           ? uploadedImages.find((img) => img.id === image.id)?.dataUrl
           : `https://picsum.photos/seed/${seed}/400/300.jpg`;
 
         return `
-        <div class="image-card" onclick="openImagePreview(${image.id})">
-            <div class="image-wrapper">
-                <img src="${imageSrc}" alt="${image.title}" loading="lazy">
-                <div class="image-overlay">
-                    <div class="overlay-actions">
-                        <button class="overlay-btn ${
-                          isLiked ? "liked" : ""
-                        }" onclick="event.stopPropagation(); likeImage(${
-          image.id
-        })">
-                            <i class="fas fa-heart${
-                              isLiked ? "" : "-o"
-                            }"></i> ${image.likes + (isLiked ? 1 : 0)}
-                        </button>
-                        <button class="overlay-btn download ${
-                          isDownloaded ? "downloaded" : ""
-                        }" onclick="event.stopPropagation(); downloadImage(${
-          image.id
-        }, '${image.title}.jpg')">
-                            <i class="fas fa-download"></i> ${
-                              isDownloaded ? "Downloaded" : "Download"
-                            }
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="image-info">
-                <div class="image-title">${image.title} ${
-          isUploaded
-            ? '<span style="color: var(--primary-color); font-size: 0.8em;">(Uploaded)</span>'
-            : ""
-        }</div>
-                <div class="image-meta">
-                    <div class="image-author">
-                        <div class="author-avatar">${image.author
-                          .substring(0, 2)
-                          .toUpperCase()}</div>
-                        <span>${image.author}</span>
-                    </div>
-                    <div class="image-stats">
-                        <i class="fas fa-download"></i> ${formatNumber(
-                          image.downloads
-                        )}
-                    </div>
-                </div>
-            </div>
+    <div class="image-card" onclick="openImagePreview(${image.id})">
+      <div class="image-wrapper">
+        <img src="${imageSrc}" alt="${image.title}" loading="lazy">
+        <div class="image-overlay">
+          <div class="overlay-actions">
+            <button class="overlay-btn ${isLiked ? "liked" : ""}" 
+              onclick="event.stopPropagation(); likeImage(${image.id})">
+              <i class="fas fa-heart${isLiked ? "" : "-o"}"></i> 
+              ${image.likes + (isLiked ? 1 : 0)}
+            </button>
+            <button class="overlay-btn download ${
+              isDownloaded ? "downloaded" : ""
+            }" 
+              onclick="event.stopPropagation(); downloadImage(${image.id}, '${
+          image.title
+        }.jpg')">
+              <i class="fas fa-download"></i> 
+              ${isDownloaded ? "Downloaded" : "Download"}
+            </button>
+          </div>
         </div>
-    `;
+      </div>
+      <div class="image-info">
+        <div class="image-title">${image.title} 
+          ${
+            isUploaded
+              ? '<span style="color: var(--primary-color); font-size: 0.8em;">(Uploaded)</span>'
+              : ""
+          }
+        </div>
+        
+        <!-- Tags Section -->
+        ${
+          image.tags && image.tags.length > 0
+            ? `
+          <div style="margin: 0.25rem 0; display: flex; flex-wrap: wrap; gap: 0.25rem;">
+            ${image.tags
+              .slice(0, 3)
+              .map(
+                (tag) => `
+              <span style="
+                background: var(--light-bg);
+                color: var(--text-secondary);
+                padding: 0.125rem 0.5rem;
+                border-radius: 10px;
+                font-size: 0.7rem;
+              ">${tag}</span>
+            `
+              )
+              .join("")}
+            ${
+              image.tags.length > 3
+                ? `
+              <span style="
+                color: var(--text-secondary);
+                font-size: 0.7rem;
+                padding: 0.125rem 0.25rem;
+              ">+${image.tags.length - 3}</span>
+            `
+                : ""
+            }
+          </div>
+        `
+            : ""
+        }
+        
+        <div class="image-meta">
+          <div class="image-author">
+            <div class="author-avatar">${image.author
+              .substring(0, 2)
+              .toUpperCase()}</div>
+            <span>${image.author}</span>
+          </div>
+          <div class="image-stats">
+            <i class="fas fa-download"></i> ${formatNumber(image.downloads)}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
       }
-
       // Filter images based on category and filter
       function filterImages() {
         let filtered = [...imageData];
@@ -5083,8 +5132,28 @@ I'm a passionate photographer and designer with over 10 years of experience.</te
           toggleLikeImage(image);
         };
 
-        // Generate tags based on image title
-        generateTags(image, previewTags);
+        // Set tags dari data image
+        previewTags.innerHTML = "";
+        if (image.tags && image.tags.length > 0) {
+          image.tags.forEach((tag) => {
+            const tagElement = document.createElement("span");
+            tagElement.className = "filter-tag";
+            tagElement.textContent = tag;
+            tagElement.style.cursor = "default";
+            previewTags.appendChild(tagElement);
+          });
+        } else {
+          // Fallback ke generateTags jika tidak ada tags
+          generateTags(image, previewTags);
+        }
+
+        // Set description jika ada
+        if (image.description) {
+          previewDescription.textContent = image.description;
+        } else {
+          // Fallback ke generateDescription
+          previewDescription.textContent = generateDescription(image);
+        }
 
         // Set description
         previewDescription.textContent = generateDescription(image);
@@ -5640,70 +5709,254 @@ I'm a passionate photographer and designer with over 10 years of experience.</te
       let uploadedImages =
         JSON.parse(localStorage.getItem("uploadedImages")) || [];
 
+      // Array untuk menyimpan file yang akan diupload
+      let filesToUpload = [];
+
       // Fungsi untuk handle files upload yang sesungguhnya
       function handleFiles(files) {
-        const preview = document.getElementById("uploadPreview");
-        const previewGrid = document.getElementById("previewGrid");
+        const formsContainer = document.getElementById("formsContainer");
+        const uploadForms = document.getElementById("uploadForms");
 
-        preview.style.display = "block";
-        previewGrid.innerHTML = "";
+        // Reset
+        formsContainer.innerHTML = "";
+        filesToUpload = Array.from(files);
 
-        Array.from(files).forEach((file, index) => {
+        // Tampilkan form untuk setiap file
+        filesToUpload.forEach((file, index) => {
           const reader = new FileReader();
 
           reader.onload = (e) => {
-            // Simpan gambar ke localStorage
-            const imageData = {
-              id: Date.now() + index,
-              title: file.name.replace(/\.[^/.]+$/, ""), // Remove extension
-              fileName: file.name,
-              dataUrl: e.target.result,
-              size: file.size,
-              type: file.type,
-              uploadDate: new Date().toISOString(),
-              downloads: 0,
-              author: currentUser ? currentUser.name : "Guest",
-              category: "uploaded",
-            };
+            // Buat form untuk setiap gambar
+            const formDiv = document.createElement("div");
+            formDiv.className = "upload-form-item";
+            formDiv.style.cssText = `
+        background: var(--light-bg);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border: 1px solid var(--border-color);
+      `;
 
-            // Tambahkan ke array uploadedImages
-            uploadedImages.push(imageData);
+            formDiv.innerHTML = `
+        <div style="display: flex; gap: 1.5rem; align-items: flex-start">
+          <!-- Preview Image -->
+          <div style="flex: 0 0 120px">
+            <img 
+              src="${e.target.result}" 
+              alt="Preview" 
+              style="
+                width: 100%;
+                height: 120px;
+                object-fit: cover;
+                border-radius: 8px;
+                border: 1px solid var(--border-color);
+              "
+            />
+            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem">
+              ${formatFileSize(file.size)}
+            </div>
+          </div>
+          
+          <!-- Form Inputs -->
+          <div style="flex: 1">
+            <!-- Title -->
+            <div class="form-group" style="margin-bottom: 1rem">
+              <label class="form-label">Image Title *</label>
+              <input 
+                type="text" 
+                class="form-input" 
+                id="title_${index}"
+                placeholder="Enter a descriptive title"
+                value="${file.name.replace(/\.[^/.]+$/, "")}"
+                required
+              >
+            </div>
+            
+            <!-- Category -->
+            <div class="form-group" style="margin-bottom: 1rem">
+              <label class="form-label">Category *</label>
+              <select class="form-input" id="category_${index}" required>
+                <option value="">Select category</option>
+                <option value="png">PNG Images</option>
+                <option value="photos">Photos</option>
+                <option value="vectors">Vectors</option>
+                <option value="videos">Videos</option>
+                <option value="ppt">PowerPoint</option>
+                <option value="mockups">Mockups</option>
+                <option value="backgrounds">Backgrounds</option>
+              </select>
+            </div>
+            
+            <!-- Tags -->
+            <div class="form-group" style="margin-bottom: 0.5rem">
+              <label class="form-label">Tags</label>
+              <input 
+                type="text" 
+                class="form-input" 
+                id="tags_${index}"
+                placeholder="nature, landscape, mountain (comma separated)"
+              >
+              <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem">
+                Add relevant keywords to help others find your image
+              </div>
+            </div>
+            
+            <!-- Description (Opsional) -->
+            <div class="form-group">
+              <label class="form-label">Description</label>
+              <textarea 
+                class="form-textarea" 
+                id="description_${index}"
+                placeholder="Describe your image (optional)"
+                rows="2"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+      `;
 
-            // Simpan ke localStorage
-            localStorage.setItem(
-              "uploadedImages",
-              JSON.stringify(uploadedImages)
-            );
-
-            // Tampilkan preview
-            previewGrid.innerHTML += `
-                <div style="position: relative;">
-                    <img src="${e.target.result}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 8px;">
-                    <div style="position: absolute; top: 5px; right: 5px; background: var(--primary-color); color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">
-                        ✓
-                    </div>
-                </div>
-            `;
-
-            // Update grid untuk menampilkan gambar yang baru diupload
-            if (currentCategory === "all" || currentCategory === "uploaded") {
-              updateImageGrid();
-            }
+            formsContainer.appendChild(formDiv);
           };
 
           reader.readAsDataURL(file);
         });
 
-        showToast(`${files.length} file(s) uploaded successfully!`, "success");
+        // Tampilkan form section
+        uploadForms.style.display = "block";
 
-        // Auto close modal setelah 2 detik
+        // Scroll ke form section
         setTimeout(() => {
-          closeUploadModal();
-        }, 2000);
+          uploadForms.scrollIntoView({ behavior: "smooth" });
+        }, 300);
+      }
+
+      // Fungsi bantu format file size
+      function formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + " bytes";
+        else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + " KB";
+        else return (bytes / 1048576).toFixed(1) + " MB";
+      }
+
+      // Fungsi untuk memproses semua upload
+      function processAllUploads() {
+        if (filesToUpload.length === 0) {
+          showToast("No files to upload", "error");
+          return;
+        }
+
+        // Validasi semua form
+        let isValid = true;
+        const uploadData = [];
+
+        filesToUpload.forEach((file, index) => {
+          const title = document.getElementById(`title_${index}`).value.trim();
+          const category = document.getElementById(`category_${index}`).value;
+          const tags = document.getElementById(`tags_${index}`).value;
+          const description = document.getElementById(
+            `description_${index}`
+          ).value;
+
+          if (!title || !category) {
+            isValid = false;
+            showToast(
+              `Please fill all required fields for image ${index + 1}`,
+              "error"
+            );
+            return;
+          }
+
+          // Simpan data sementara
+          uploadData.push({
+            file,
+            title,
+            category,
+            tags: tags
+              .split(",")
+              .map((tag) => tag.trim())
+              .filter((tag) => tag),
+            description,
+            index,
+          });
+        });
+
+        if (!isValid) return;
+
+        // Proses upload satu per satu
+        uploadData.forEach((data, idx) => {
+          setTimeout(() => {
+            uploadSingleImage(data, idx, uploadData.length);
+          }, idx * 500); // Delay untuk efek berurutan
+        });
+      }
+
+      // Fungsi untuk upload single image
+      function uploadSingleImage(data, currentIndex, totalCount) {
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          const imageData = {
+            id: Date.now() + currentIndex,
+            title: data.title,
+            fileName: data.file.name,
+            dataUrl: e.target.result,
+            size: data.file.size,
+            type: data.file.type,
+            uploadDate: new Date().toISOString(),
+            downloads: 0,
+            author: currentUser ? currentUser.name : "Guest",
+            category: data.category,
+            tags: data.tags,
+            description: data.description,
+            isUploaded: true,
+          };
+
+          // Tambahkan ke uploadedImages
+          uploadedImages.push(imageData);
+
+          // Simpan ke localStorage
+          localStorage.setItem(
+            "uploadedImages",
+            JSON.stringify(uploadedImages)
+          );
+
+          // Tampilkan progress
+          const progress = Math.round(((currentIndex + 1) / totalCount) * 100);
+          showToast(
+            `Uploading ${currentIndex + 1}/${totalCount}: ${data.title}`,
+            "success"
+          );
+
+          // Update UI setelah upload terakhir
+          if (currentIndex === totalCount - 1) {
+            setTimeout(() => {
+              showToast(
+                `${totalCount} image(s) uploaded successfully!`,
+                "success"
+              );
+
+              // Reset form
+              document.getElementById("uploadForms").style.display = "none";
+              document.getElementById("formsContainer").innerHTML = "";
+              filesToUpload = [];
+
+              // Update grid jika di kategori yang relevan
+              if (currentCategory === "all" || currentCategory === "uploaded") {
+                updateImageGrid();
+              }
+
+              // Close modal setelah delay
+              setTimeout(() => {
+                closeUploadModal();
+              }, 1000);
+            }, 500);
+          }
+        };
+
+        reader.readAsDataURL(data.file);
       }
 
       function openCollection(collectionName) {
-        showToast(`Opening ${collectionName} collection...`, "success");
+        // ... existing code ...
       }
 
       function createNewCollection() {
